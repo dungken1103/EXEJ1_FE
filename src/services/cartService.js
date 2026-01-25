@@ -10,12 +10,12 @@ const cartService = {
       withCredentials: true,
     }),
 
-  // Thêm vào giỏ
-  addToCart: (userId, bookId, quantity = 1) =>
+  // Thêm vào giỏ (productId - backend dùng product)
+  addToCart: (userId, productId, quantity = 1) =>
     axios.post(
       `${API_URL}/add`,
-      { userId, bookId, quantity },
-      { withCredentials: true } // ✅ đúng vị trí
+      { userId, productId, quantity },
+      { withCredentials: true }
     ),
 
   // Cập nhật số lượng

@@ -57,14 +57,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/checkout"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <CheckoutPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/checkout" element={<CheckoutPage />} />
 
         <Route path="/book/:id" element={<BookDetail />} />
         <Route

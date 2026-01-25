@@ -10,6 +10,7 @@ const CheckoutPage = () => {
 
   const [form, setForm] = useState({
     name: "",
+    email: "",
     phone: "",
     province: "",
     district: "",
@@ -24,7 +25,8 @@ const CheckoutPage = () => {
     if (storedUser)
       setForm((f) => ({
         ...f,
-        name: storedUser.fullName || "",
+        name: storedUser.fullName || storedUser.name || "",
+        email: storedUser.email || "",
         phone: storedUser.phone || "",
       }));
 
@@ -65,48 +67,62 @@ const CheckoutPage = () => {
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  const updateQuantity = (itemId, newQuantity) => {
-    if (newQuantity < 1) return;
-    setCheckoutItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
+  const getProduct = (item) => item.product || item.book || {};
   const total = checkoutItems.reduce(
-    (sum, item) => sum + (item.book.price || 0) * (item.quantity || 0),
+    (sum, item) =>
+      sum + (getProduct(item).price || 0) * (item.quantity || 0),
     0
   );
 
+  const updateQuantity = (itemKey, newQuantity) => {
+    if (newQuantity < 1) return;
+    setCheckoutItems((prev) =>
+      prev.map((item) => {
+        const key = item.id || getProduct(item).id;
+        return key === itemKey ? { ...item, quantity: newQuantity } : item;
+      })
+    );
+  };
+
   const handlePayment = async () => {
-    if (!user) {
-      alert("Vui lòng đăng nhập trước khi thanh toán");
-      return;
-    }
+    const isGuest = !user;
+    const paymentMethod = isGuest ? "COD" : form.paymentMethod;
 
     if (
+      !form.name?.trim() ||
+      !form.phone?.trim() ||
       !form.province ||
       !form.district ||
       !form.ward ||
-      !form.address ||
-      !form.phone
+      !form.address?.trim()
     ) {
-      alert("Vui lòng điền đầy đủ thông tin địa chỉ và số điện thoại");
+      alert("Vui lòng điền đầy đủ thông tin người nhận và địa chỉ giao hàng.");
+      return;
+    }
+    if (isGuest && !form.email?.trim()) {
+      alert("Vui lòng nhập email để nhận xác nhận đơn hàng.");
+      return;
+    }
+    if (checkoutItems.length === 0) {
+      alert("Giỏ hàng trống. Vui lòng thêm sản phẩm.");
       return;
     }
 
     try {
       const payload = {
-        userId: user.id,
-        items: checkoutItems.map((item) => ({
-          bookId: item.book.id,
-          quantity: item.quantity,
-          price: item.book.price,
-        })),
-        payment: form.paymentMethod,
+        userId: isGuest ? null : user.id,
+        items: checkoutItems.map((item) => {
+          const p = getProduct(item);
+          return {
+            productId: p.id,
+            quantity: item.quantity || 1,
+            price: p.price || 0,
+          };
+        }),
+        payment: paymentMethod,
         userAddress: {
           fullName: form.name,
+          email: form.email || user?.email,
           phone: form.phone,
           province:
             provinces.find((p) => p.code === Number(form.province))?.name || "",
@@ -117,41 +133,35 @@ const CheckoutPage = () => {
         },
       };
 
-      const res = await fetch("http://localhost:3212/order/create", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3212";
+      const res = await fetch(`${apiUrl}/order/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Thanh toán thất bại");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || "Đặt hàng thất bại");
       }
 
-      const data = await res.json();
-
-      // ✅ Xóa trong localStorage
-      const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
-      const updatedCart = cartItems.filter(
-        (cartItem) =>
-          !checkoutItems.some(
-            (checkoutItem) => checkoutItem.book.id === cartItem.book.id
-          )
-      );
-      localStorage.setItem("cart_items", JSON.stringify(updatedCart));
       localStorage.removeItem("checkout_items");
 
-      // ✅ Xóa trong DB
-      for (let item of checkoutItems) {
-        await cartService.removeItem(item.id, user.id);
-        // item.id ở đây là id của cartItem trong DB, không phải book.id
+      if (!isGuest && user?.id) {
+        for (const item of checkoutItems) {
+          if (item.id) {
+            try {
+              await cartService.removeItem(item.id, user.id);
+            } catch (_) {}
+          }
+        }
       }
 
-      alert("Đặt hàng thành công!");
+      alert("Đặt hàng thành công! Chúng tôi sẽ liên hệ bạn sớm.");
       window.location.href = "/";
     } catch (err) {
       console.error(err);
-      alert(err.message || "Có lỗi khi thanh toán");
+      alert(err.message || "Có lỗi khi đặt hàng. Vui lòng thử lại.");
     }
   };
 
@@ -163,47 +173,48 @@ const CheckoutPage = () => {
           <h2 className="text-lg font-semibold mb-4">Sản phẩm</h2>
           <ul className="divide-y">
             {checkoutItems.map((item) => {
-              const tempPrice = (item.book.price || 0) * (item.quantity || 0);
+              const p = getProduct(item);
+              const itemKey = item.id || p.id;
+              const tempPrice = (p.price || 0) * (item.quantity || 0);
+              const imgSrc = p.image?.startsWith("http") ? p.image : `${import.meta.env.VITE_API_URL || "http://localhost:3212"}${p.image}`;
               return (
-                <li key={item.id} className="py-4 flex items-center gap-4">
+                <li key={itemKey} className="py-4 flex items-center gap-4">
                   <img
-                    src={
-                      item.book.image?.startsWith("http")
-                        ? item.book.image
-                        : `http://localhost:3212${item.book.image}`
-                    }
-                    alt={item.book.title}
+                    src={imgSrc || "/images/waste_to_worth_logo.png"}
+                    alt={p.name || p.title}
                     className="w-20 h-20 object-cover rounded"
                   />
                   <div className="flex-1">
-                    <p className="font-medium">{item.book.title}</p>
+                    <p className="font-medium">{p.name || p.title}</p>
                     <p className="text-sm text-gray-500">
-                      Giá: {item.book.price.toLocaleString()}₫
+                      Giá: {(p.price || 0).toLocaleString("vi-VN")}₫
                     </p>
                     <div className="flex items-center mt-2 space-x-2">
                       <button
+                        type="button"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
+                          updateQuantity(itemKey, (item.quantity || 1) - 1)
                         }
                         className="px-2 py-1 border rounded"
-                        disabled={item.quantity <= 1}
+                        disabled={(item.quantity || 1) <= 1}
                       >
                         -
                       </button>
-                      <span>{item.quantity}</span>
+                      <span>{item.quantity || 1}</span>
                       <button
+                        type="button"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
+                          updateQuantity(itemKey, (item.quantity || 1) + 1)
                         }
                         className="px-2 py-1 border rounded"
-                        disabled={item.quantity >= item.book.stock}
+                        disabled={(p.stock ?? 0) > 0 && (item.quantity || 1) >= (p.stock ?? 0)}
                       >
                         +
                       </button>
                     </div>
                   </div>
                   <p className="font-semibold min-w-[100px] text-right">
-                    {tempPrice.toLocaleString()}₫
+                    {tempPrice.toLocaleString("vi-VN")}₫
                   </p>
                 </li>
               );
@@ -222,16 +233,27 @@ const CheckoutPage = () => {
               name="name"
               value={form.name}
               onChange={handleInputChange}
-              placeholder="Họ và tên"
+              placeholder="Họ và tên *"
               className="border p-2 rounded w-full"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleInputChange}
+              placeholder="Email *"
+              className="border p-2 rounded w-full"
+              required={!user}
             />
             <input
               type="tel"
               name="phone"
               value={form.phone}
               onChange={handleInputChange}
-              placeholder="Số điện thoại"
+              placeholder="Số điện thoại *"
               className="border p-2 rounded w-full"
+              required
             />
             <select
               value={form.province}
@@ -300,16 +322,23 @@ const CheckoutPage = () => {
               />
               Thanh toán khi nhận hàng (COD)
             </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="Wallet"
-                checked={form.paymentMethod === "Wallet"}
-                onChange={handleInputChange}
-              />
-              Thanh toán bằng ví
-            </label>
+            {user && (
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="Wallet"
+                  checked={form.paymentMethod === "Wallet"}
+                  onChange={handleInputChange}
+                />
+                Thanh toán bằng ví
+              </label>
+            )}
+            {!user && (
+              <p className="text-sm text-gray-500 mt-1">
+                Đăng nhập để sử dụng thanh toán bằng ví.
+              </p>
+            )}
           </div>
           <button
             onClick={handlePayment}

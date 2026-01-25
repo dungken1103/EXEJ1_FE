@@ -1,273 +1,259 @@
-// ShopPage.jsx
 import React, { useEffect, useState } from "react";
-import bookService from "../../services/bookService";
-import categoryServices from "../../services/categoryService";
-import authorServices from "../../services/authorServices";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import productService from "../../services/productService";
+import categoryService from "../../services/categoryService";
+import {
+  HiOutlineMap,
+  HiOutlineShoppingBag,
+  HiOutlineArrowRight,
+} from "react-icons/hi2";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3212";
+const getImageUrl = (path) => {
+  if (!path) return "/images/waste_to_worth_logo.png";
+  if (path.startsWith("http")) return path;
+  return `${API_BASE}${path}`;
+};
+
+const brandGreen = "#2d5a27";
+const brandBrown = "#5D4E37";
+const cream = "#f8f5f0";
+const creamDark = "#ebe5dc";
+
+const LIMIT = 12;
 
 const ShopPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const queryParams = new URLSearchParams(location.search);
   const initCategoryId = queryParams.get("categoryId") || "";
-  const initAuthorId = queryParams.get("authorId") || "";
+  const initPage = Number.parseInt(queryParams.get("page"), 10) || 1;
 
   const [categories, setCategories] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [books, setBooks] = useState([]);
-  const [catSearch, setCatSearch] = useState("");
-  const [authorSearch, setAuthorSearch] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     status: "AVAILABLE",
     categoryId: initCategoryId,
-    authorId: initAuthorId,
-    limit: 6,
-    page: 1,
+    limit: LIMIT,
+    page: initPage,
   });
-  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  // Load categories & authors
   useEffect(() => {
-    const fetchFilters = async () => {
-      try {
-        const [catRes, authRes] = await Promise.all([
-          categoryServices.getCategories(),
-          authorServices.getAuthors(),
-        ]);
-        setCategories(catRes);
-        setAuthors(authRes);
-      } catch (err) {
-        console.error("Error loading filters:", err);
-      }
-    };
-    fetchFilters();
+    document.title = "Cửa hàng mô hình bản đồ gỗ | Waste To Worth";
+    return () => { document.title = "Waste To Worth"; };
   }, []);
 
-  // Load books khi filters hoặc danh sách authors/categories thay đổi
   useEffect(() => {
-    const fetchBooks = async () => {
+    const load = async () => {
       try {
-        const res = await bookService.getAll(filters);
-
-        // Map thêm authorName & categoryName từ state authors/categories
-        const mappedBooks = (res.data || []).map((book) => ({
-          ...book,
-          authorName: authors.find((a) => a.id === book.authorId)?.name || null,
-          categoryName:
-            categories.find((c) => c.id === book.categoryId)?.name || null,
-        }));
-
-        setBooks(mappedBooks);
-        setTotalPages(res.totalPages || 1);
+        const data = await categoryService.getCategories();
+        setCategories(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error loading books:", err);
+        console.error("Error loading categories:", err);
       }
     };
+    load();
+  }, []);
 
-    // Chỉ fetch khi authors và categories đã load
-    if (authors.length > 0 && categories.length > 0) {
-      fetchBooks();
-    }
-  }, [filters, authors, categories]);
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await productService.getAll(filters);
+        const list = Array.isArray(res.data) ? res.data : [];
+        setProducts(list);
+        setHasMore(list.length >= LIMIT);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setProducts([]);
+        setHasMore(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [filters]);
 
-  const handleFilterChange = (key, value) => {
-    const newFilters = { ...filters, [key]: value, page: 1 };
-    setFilters(newFilters);
+  const handleCategory = (categoryId) => {
+    const next = { ...filters, categoryId: categoryId || undefined, page: 1 };
+    setFilters(next);
     const params = new URLSearchParams();
-    if (newFilters.categoryId) params.set("categoryId", newFilters.categoryId);
-    if (newFilters.authorId) params.set("authorId", newFilters.authorId);
+    if (next.categoryId) params.set("categoryId", next.categoryId);
     navigate(`/shop?${params.toString()}`);
   };
 
-  const filteredCategories = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(catSearch.toLowerCase())
-  );
-  const filteredAuthors = authors.filter((auth) =>
-    auth.name.toLowerCase().includes(authorSearch.toLowerCase())
-  );
+  const handlePage = (page) => {
+    const next = { ...filters, page };
+    setFilters(next);
+    const params = new URLSearchParams(location.search);
+    params.set("page", String(page));
+    navigate(`/shop?${params.toString()}`);
+  };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-6 bg-gray-50 min-h-screen">
-      {/* Sidebar */}
-      <div className="w-full lg:w-1/4 space-y-6 bg-white p-4 rounded-xl shadow border border-yellow-300">
-        {/* Category */}
-        <div>
-          <h3 className="font-semibold text-lg mb-2 text-yellow-700">
-            📂 Categories
-          </h3>
-          <input
-            type="text"
-            placeholder="Tìm category..."
-            value={catSearch}
-            onChange={(e) => setCatSearch(e.target.value)}
-            className="w-full p-2 mb-3 border border-yellow-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          />
-          <button
-            onClick={() => handleFilterChange("categoryId", "")}
-            className={`block w-full text-left p-2 rounded-lg mb-1 transition ${
-              filters.categoryId === ""
-                ? "bg-yellow-500 text-white"
-                : "hover:bg-yellow-100"
-            }`}
-          >
-            Tất cả
-          </button>
-          {filteredCategories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleFilterChange("categoryId", cat.id)}
-              className={`block w-full text-left p-2 rounded-lg mb-1 transition ${
-                filters.categoryId === cat.id
-                  ? "bg-yellow-500 text-white"
-                  : "hover:bg-yellow-100"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
+    <div
+      className="min-h-screen text-[#2d2d2d] antialiased"
+      style={{ backgroundColor: cream }}
+    >
+      {/* SEO: structured content */}
+      <article className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <header className="mb-8 lg:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3" style={{ color: brandBrown }}>
+            Cửa hàng mô hình bản đồ gỗ
+          </h1>
+          <p className="text-gray-600 max-w-2xl">
+            Khám phá bản đồ Việt Nam 3D từ gỗ quý tái chế — từ cơ bản đến chi tiết 63 tỉnh thành. 
+            Chọn danh mục bên dưới hoặc xem tất cả sản phẩm.
+          </p>
+        </header>
 
-        {/* Author */}
-        <div>
-          <h3 className="font-semibold text-lg mb-2 text-yellow-700">
-            ✍ Authors
-          </h3>
-          <input
-            type="text"
-            placeholder="Tìm author..."
-            value={authorSearch}
-            onChange={(e) => setAuthorSearch(e.target.value)}
-            className="w-full p-2 mb-3 border border-yellow-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          />
-          <button
-            onClick={() => handleFilterChange("authorId", "")}
-            className={`block w-full text-left p-2 rounded-lg mb-1 transition ${
-              filters.authorId === ""
-                ? "bg-yellow-500 text-white"
-                : "hover:bg-yellow-100"
-            }`}
-          >
-            Tất cả
-          </button>
-          {filteredAuthors.map((auth) => (
-            <button
-              key={auth.id}
-              onClick={() => handleFilterChange("authorId", auth.id)}
-              className={`block w-full text-left p-2 rounded-lg mb-1 transition ${
-                filters.authorId === auth.id
-                  ? "bg-yellow-500 text-white"
-                  : "hover:bg-yellow-100"
-              }`}
-            >
-              {auth.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Book List */}
-      <div className="w-full lg:w-3/4">
-        {books.length === 0 ? (
-          <p className="text-gray-500">Không có sách nào.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {books.map((book) => (
-              <div
-                key={book.id}
-                onClick={() => navigate(`/book/${book.id}`)}
-                className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 border border-yellow-200 flex flex-col cursor-pointer"
-              >
-                {book.image ? (
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}${book.image}`}
-                    alt={book.title}
-                    className="h-64 w-full object-cover object-center rounded-lg mb-4"
-                  />
-                ) : (
-                  <div className="h-64 w-full bg-gray-100 flex items-center justify-center text-sm text-gray-400 rounded-lg mb-4">
-                    No image
-                  </div>
-                )}
-
-                <h4 className="font-semibold text-lg text-yellow-700 truncate">
-                  {book.title}
-                </h4>
-                <div className="mt-3 text-gray-700 text-sm flex flex-wrap gap-2">
-                  <span className="font-medium">✍ Tác giả:</span>
-                  {book.authors?.length
-                    ? book.authors.map((a, idx) => (
-                        <span
-                          key={idx}
-                          onClick={() => navigate(`/shop?authorId=${a.id}`)}
-                          className="text-blue-600 hover:underline cursor-pointer"
-                        >
-                          {a.name}
-                        </span>
-                      ))
-                    : "Không rõ tác giả"}
-                </div>
-
-                {/* Thể loại */}
-                <div className="mt-1 text-gray-700 text-sm flex flex-wrap gap-2">
-                  <span className="font-medium">📂 Thể loại:</span>
-                  {book.categories && book.categories.length > 0
-                    ? book.categories.map((cat) => (
-                        <span
-                          key={cat.id}
-                          onClick={() => navigate(`/shop?categoryId=${cat.id}`)}
-                          className="text-blue-600 hover:underline cursor-pointer"
-                        >
-                          {cat.name}
-                        </span>
-                      ))
-                    : "Không rõ thể loại"}
-                </div>
-
-                <p
-                  className={`text-sm font-medium mt-1 ${
-                    book.stock > 0 ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {book.stock > 0 ? `Còn ${book.stock} quyển` : "Hết hàng"}
-                </p>
-                <p className="text-lg font-bold text-yellow-600 mt-2">
-                  {book.price?.toLocaleString("vi-VN")}₫
-                </p>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar: Danh mục */}
+          <aside className="lg:w-64 flex-shrink-0">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-24">
+              <div className="p-4 border-b border-gray-100">
+                <h2 className="font-bold flex items-center gap-2" style={{ color: brandBrown }}>
+                  <HiOutlineMap className="w-5 h-5" />
+                  Danh mục
+                </h2>
               </div>
-            ))}
-          </div>
-        )}
+              <nav className="p-2">
+                <button
+                  type="button"
+                  onClick={() => handleCategory("")}
+                  className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${
+                    !filters.categoryId
+                      ? "text-white font-medium"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                  style={!filters.categoryId ? { backgroundColor: brandGreen } : {}}
+                >
+                  Tất cả sản phẩm
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategory(cat.id)}
+                    className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${
+                      filters.categoryId === cat.id
+                        ? "text-white font-medium"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                    style={filters.categoryId === cat.id ? { backgroundColor: brandGreen } : {}}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-6 gap-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() =>
-                setFilters((prev) => {
-                  const updated = { ...prev, page: i + 1 };
-                  const params = new URLSearchParams();
-                  if (updated.categoryId)
-                    params.set("categoryId", updated.categoryId);
-                  if (updated.authorId)
-                    params.set("authorId", updated.authorId);
-                  params.set("page", updated.page);
-                  navigate(`/shop?${params.toString()}`);
-                  return updated;
-                })
-              }
-              className={`px-4 py-2 rounded transition ${
-                filters.page === i + 1
-                  ? "bg-yellow-500 text-white"
-                  : "bg-yellow-100 hover:bg-yellow-200"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+          {/* Main: Danh sách sản phẩm */}
+          <main className="flex-1 min-w-0">
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-xl border border-gray-100 h-80 animate-pulse"
+                    style={{ backgroundColor: creamDark }}
+                  />
+                ))}
+              </div>
+            ) : products.length === 0 ? (
+              <section className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+                <HiOutlineShoppingBag className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <h2 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h2>
+                <p className="text-gray-500 mb-6">
+                  Danh mục này đang cập nhật. Bạn có thể xem tất cả sản phẩm.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleCategory("")}
+                  className="px-6 py-3 rounded-xl font-semibold text-white transition hover:opacity-95"
+                  style={{ backgroundColor: brandGreen }}
+                >
+                  Xem tất cả
+                </button>
+              </section>
+            ) : (
+              <>
+                <section
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+                  aria-label="Danh sách sản phẩm"
+                >
+                  {products.map((p) => (
+                    <Link
+                      key={p.id}
+                      to={`/book/${p.id}`}
+                      className="group block bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+                    >
+                      <div className="aspect-square bg-gray-100">
+                        <img
+                          src={getImageUrl(p.image)}
+                          alt={p.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold text-gray-800 truncate" style={{ color: brandBrown }}>
+                          {p.name}
+                        </h3>
+                        {p.category && (
+                          <p className="text-sm text-gray-500 mt-1">{p.category.name}</p>
+                        )}
+                        <p className="text-base font-bold mt-2" style={{ color: brandGreen }}>
+                          {(p.price || 0).toLocaleString("vi-VN")}₫
+                        </p>
+                        <p className="text-sm mt-1">
+                          {p.stock > 0 ? (
+                            <span className="text-gray-600">Còn {p.stock} sản phẩm</span>
+                          ) : (
+                            <span className="text-red-500 font-medium">Hết hàng</span>
+                          )}
+                        </p>
+                        <span className="inline-flex items-center gap-1 text-sm font-medium mt-2" style={{ color: brandGreen }}>
+                          Xem chi tiết
+                          <HiOutlineArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </section>
+
+                {/* Pagination */}
+                <nav
+                  className="flex justify-center items-center gap-2 mt-8"
+                  aria-label="Phân trang"
+                >
+                  <button
+                    type="button"
+                    onClick={() => handlePage(filters.page - 1)}
+                    disabled={filters.page <= 1}
+                    className="px-4 py-2 rounded-xl border border-gray-200 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  >
+                    Trước
+                  </button>
+                  <span className="px-4 py-2 text-gray-600 font-medium">
+                    Trang {filters.page}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handlePage(filters.page + 1)}
+                    disabled={!hasMore}
+                    className="px-4 py-2 rounded-xl border border-gray-200 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  >
+                    Sau
+                  </button>
+                </nav>
+              </>
+            )}
+          </main>
         </div>
-      </div>
+      </article>
     </div>
   );
 };
