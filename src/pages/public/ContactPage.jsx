@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdLocationOn, MdEmail } from "react-icons/md";
 import { HiOutlineChatBubbleBottomCenterText, HiOutlinePhone } from "react-icons/hi2";
-import Swal from "sweetalert2";
+import toast from "../../utils/toast";
 
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
@@ -28,12 +28,7 @@ const ContactPage = () => {
     await new Promise((r) => setTimeout(r, 500));
     setSending(false);
     setForm({ name: "", email: "", message: "" });
-    await Swal.fire({
-      title: "Đã gửi tin nhắn",
-      text: "Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc. Bạn cũng có thể gọi hotline hoặc nhắn Zalo để được hỗ trợ nhanh.",
-      icon: "success",
-      confirmButtonColor: brandGreen,
-    });
+    toast.success("Đã gửi tin nhắn", "Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc.");
   };
 
   return (

@@ -355,7 +355,7 @@ const Header = () => {
                 {searchResults.map((p) => (
                   <li key={p.id}>
                     <Link
-                      to={`/book/${p.id}`}
+                      to={`/product/${p.id}`}
                       onClick={() => setSearchOpen(false)}
                       className="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100"
                     >

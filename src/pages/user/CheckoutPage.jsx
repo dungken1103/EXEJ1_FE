@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import cartService from "../../services/cartService";
+import toast from "../../utils/toast";
 
 const CheckoutPage = () => {
   const [user, setUser] = useState(null);
@@ -96,15 +97,15 @@ const CheckoutPage = () => {
       !form.ward ||
       !form.address?.trim()
     ) {
-      alert("Vui lòng điền đầy đủ thông tin người nhận và địa chỉ giao hàng.");
+      toast.warning("Vui lòng điền đầy đủ thông tin người nhận và địa chỉ giao hàng.");
       return;
     }
     if (isGuest && !form.email?.trim()) {
-      alert("Vui lòng nhập email để nhận xác nhận đơn hàng.");
+      toast.warning("Vui lòng nhập email để nhận xác nhận đơn hàng.");
       return;
     }
     if (checkoutItems.length === 0) {
-      alert("Giỏ hàng trống. Vui lòng thêm sản phẩm.");
+      toast.warning("Giỏ hàng trống. Vui lòng thêm sản phẩm.");
       return;
     }
 
@@ -157,11 +158,11 @@ const CheckoutPage = () => {
         }
       }
 
-      alert("Đặt hàng thành công! Chúng tôi sẽ liên hệ bạn sớm.");
+      toast.success("Đặt hàng thành công!", "Chúng tôi sẽ liên hệ bạn sớm.");
       window.location.href = "/";
     } catch (err) {
       console.error(err);
-      alert(err.message || "Có lỗi khi đặt hàng. Vui lòng thử lại.");
+      toast.error("Lỗi", err.message || "Có lỗi khi đặt hàng. Vui lòng thử lại.");
     }
   };
 

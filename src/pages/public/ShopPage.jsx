@@ -188,7 +188,7 @@ const ShopPage = () => {
                   {products.map((p) => (
                     <Link
                       key={p.id}
-                      to={`/book/${p.id}`}
+                      to={`/product/${p.id}`}
                       className="group block bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
                     >
                       <div className="aspect-square bg-gray-100">

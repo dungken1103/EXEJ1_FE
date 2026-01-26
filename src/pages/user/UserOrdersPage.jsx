@@ -3,6 +3,7 @@ import axios from "../../services/axiosConfig";
 import { FaBox, FaShippingFast, FaCheckCircle, FaTrashAlt, FaTimesCircle } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import toast from '../../utils/toast';
 
 const MySwal = withReactContent(Swal);
 
@@ -44,11 +45,11 @@ const UserOrdersPage = () => {
       if (result.isConfirmed) {
         try {
           await axios.put(`/order/${orderId}/cancel`);
-          Swal.fire('Đã hủy!', 'Đơn hàng đã được hủy.', 'success');
+          toast.success('Đã hủy!', 'Đơn hàng đã được hủy.');
 
           fetchOrders(); // load lại danh sách
         } catch (err) {
-          Swal.fire('Lỗi', 'Không thể hủy đơn hàng', 'error');
+          toast.error('Lỗi', 'Không thể hủy đơn hàng');
         }
       }
     });
@@ -67,10 +68,10 @@ const UserOrdersPage = () => {
       if (result.isConfirmed) {
         try {
           await axios.put(`order/confirm-received/${orderId}`);
-          Swal.fire('Thành công', 'Đơn hàng đã đánh dấu là đã nhận.', 'success');
+          toast.success('Thành công', 'Đơn hàng đã đánh dấu là đã nhận.');
           fetchOrders();
         } catch (err) {
-          Swal.fire('Lỗi', 'Không thể cập nhật trạng thái đơn hàng.', 'error');
+          toast.error('Lỗi', 'Không thể cập nhật trạng thái đơn hàng.');
         }
       }
     });

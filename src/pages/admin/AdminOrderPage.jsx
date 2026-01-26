@@ -3,8 +3,8 @@ import axios from "../../services/axiosConfig";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import toast from '../../utils/toast';
 import { FaEye, FaShippingFast, FaBox, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-
 
 const MySwal = withReactContent(Swal);
 
@@ -90,12 +90,12 @@ const AdminOrderPage = () => {
             try {
                 const response = await axios.put(`/admin/order/${orderId}/approve`);
                 if (response.status === 200) {
-                    MySwal.fire('Thành công', 'Đơn hàng đã được phê duyệt.', 'success');
+                    toast.success('Thành công', 'Đơn hàng đã được phê duyệt.');
                     fetchOrders();
                 }
             } catch (error) {
                 console.error('Lỗi duyệt đơn:', error);
-                MySwal.fire('Lỗi', 'Không thể phê duyệt đơn hàng.', 'error');
+                toast.error('Lỗi', 'Không thể phê duyệt đơn hàng.');
             }
         }
     };
@@ -115,12 +115,12 @@ const AdminOrderPage = () => {
             try {
                 const res = await axios.put(`/order/${orderId}/cancel`);
                 if (res.status === 200) {
-                    MySwal.fire('Đã hủy', 'Đơn hàng đã bị hủy.', 'success');
+                    toast.success('Đã hủy', 'Đơn hàng đã bị hủy.');
                     fetchOrders();
                 }
             } catch (err) {
                 console.error("Lỗi khi hủy đơn hàng:", err);
-                MySwal.fire('Lỗi', 'Không thể hủy đơn hàng.', 'error');
+                toast.error('Lỗi', 'Không thể hủy đơn hàng.');
             }
         }
     };
@@ -140,12 +140,12 @@ const AdminOrderPage = () => {
             try {
                 const res = await axios.put(`admin/order/${orderId}/assign`);
                 if (res.status === 200) {
-                    MySwal.fire('Thành công', 'Đơn đã được giao cho bên vận chuyển.', 'success');
+                    toast.success('Thành công', 'Đơn đã được giao cho bên vận chuyển.');
                     fetchOrders();
                 }
             } catch (err) {
                 console.error("Lỗi khi giao đơn hàng:", err);
-                MySwal.fire('Lỗi', 'Không thể giao đơn hàng.', 'error');
+                toast.error('Lỗi', 'Không thể giao đơn hàng.');
             }
         }
     };

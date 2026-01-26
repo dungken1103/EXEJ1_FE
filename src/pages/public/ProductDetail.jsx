@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import productService from "../../services/productService";
 import cartService from "../../services/cartService";
-import Swal from "sweetalert2";
+import toast from "../../utils/toast";
 import {
   HiOutlineShoppingBag,
   HiOutlineArrowLeft,
@@ -25,7 +25,7 @@ const cream = "#f8f5f0";
 
 const DIFFICULTY_LABEL = { EASY: "Dễ", MEDIUM: "Trung bình", HARD: "Khó" };
 
-const BookDetail = () => {
+const ProductDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { refreshCartCount } = useCart();
@@ -88,32 +88,18 @@ const BookDetail = () => {
       };
       const next = existing ? list.map((i) => ((i.product?.id || i.productId) === product.id ? item : i)) : [...list, item];
       localStorage.setItem(key, JSON.stringify(next));
-      await Swal.fire({
-        title: "Đã thêm vào giỏ",
-        text: "Bạn có thể thanh toán ngay hoặc tiếp tục mua sắm.",
-        icon: "success",
-        confirmButtonColor: brandGreen,
-      });
-      window.dispatchEvent(new Event("guestCartUpdated"));
+      toast.success("Đã thêm vào giỏ hàng");
+      globalThis.dispatchEvent(new Event("guestCartUpdated"));
       return;
     }
 
     try {
       await cartService.addToCart(user.id, product.id, quantity);
       if (refreshCartCount) refreshCartCount();
-      await Swal.fire({
-        title: "Đã thêm vào giỏ hàng",
-        icon: "success",
-        confirmButtonColor: brandGreen,
-      });
+      toast.success("Đã thêm vào giỏ hàng");
     } catch (err) {
       console.error("Error adding to cart:", err);
-      await Swal.fire({
-        title: "Không thêm được vào giỏ",
-        text: "Vui lòng thử lại sau.",
-        icon: "error",
-        confirmButtonColor: brandGreen,
-      });
+      toast.error("Không thêm được vào giỏ. Vui lòng thử lại.");
     }
   };
 
@@ -156,7 +142,6 @@ const BookDetail = () => {
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-10">
-            {/* Ảnh */}
             <figure className="aspect-square lg:aspect-auto lg:min-h-[400px] bg-gray-100 rounded-xl overflow-hidden">
               <img
                 src={getImageUrl(product.image)}
@@ -165,7 +150,6 @@ const BookDetail = () => {
               />
             </figure>
 
-            {/* Thông tin */}
             <div>
               <header>
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: brandBrown }}>
@@ -301,4 +285,4 @@ const BookDetail = () => {
   );
 };
 
-export default BookDetail;
+export default ProductDetail;

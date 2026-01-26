@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "../../services/axiosConfig";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import toast from "../../utils/toast";
 import { v4 as uuidv4 } from "uuid";
 
 const DepositPage = ({}) => {
@@ -44,7 +45,7 @@ const DepositPage = ({}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isNaN(amount) || parseFloat(amount) <= 0) {
-      alert("Vui lòng nhập số tiền hợp lệ.");
+      toast.warning("Vui lòng nhập số tiền hợp lệ.");
       return;
     }
     const rawUuid = uuidv4();
@@ -70,7 +71,7 @@ const DepositPage = ({}) => {
       fetchTransactions();
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu nạp tiền:", error);
-      alert("Không thể gửi yêu cầu nạp tiền. Vui lòng thử lại.");
+      toast.error("Không thể gửi yêu cầu nạp tiền. Vui lòng thử lại.");
     }
   };
 

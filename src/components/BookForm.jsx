@@ -4,6 +4,7 @@ import Select from "react-select";
 import bookService from "../services/bookService";
 import authorService from "../services/authorServices";
 import categoryService from "../services/categoryService";
+import toast from "../utils/toast";
 
 export default function BookForm({ isEdit = false }) {
   const { id } = useParams(); // <-- lấy id từ URL
@@ -55,7 +56,7 @@ export default function BookForm({ isEdit = false }) {
         })
         .catch((err) => {
           console.error("Error fetching book:", err);
-          alert("Không tìm thấy sách.");
+          toast.error("Không tìm thấy sách.");
         });
     }
   }, [isEdit, id]);
@@ -94,7 +95,7 @@ export default function BookForm({ isEdit = false }) {
       navigate("/admin-dashboard/books");
     } catch (err) {
       console.error("Error submitting book:", err);
-      alert(`${isEdit ? "Cập nhật" : "Tạo"} sách thất bại!`);
+      toast.error(`${isEdit ? "Cập nhật" : "Tạo"} sách thất bại!`);
     }
   };
 

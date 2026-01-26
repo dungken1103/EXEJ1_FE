@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bookService from "../../services/bookService";
+import toast from "../../utils/toast";
 import {
   PencilSquareIcon,
   XCircleIcon,
@@ -47,9 +48,9 @@ const ManageBookPage = () => {
       try {
         await bookService.disable(id);
         fetchBooks();
-        Swal.fire("Disabled!", "The book has been disabled.", "success");
+        toast.success("Disabled!", "The book has been disabled.");
       } catch (err) {
-        Swal.fire("Error", "Failed to disable book.", "error");
+        toast.error("Error", "Failed to disable book.");
       }
     }
   };
@@ -64,11 +65,11 @@ const ManageBookPage = () => {
     try {
       const newStock = selectedBook.stock + addQuantity;
       await bookService.updateStock(selectedBook.id, newStock);
-      Swal.fire("Success", "Cập nhật tồn kho thành công!", "success");
+      toast.success("Thành công", "Cập nhật tồn kho thành công!");
       fetchBooks();
       setIsModalOpen(false);
     } catch (err) {
-      Swal.fire("Error", "Không thể cập nhật tồn kho", "error");
+      toast.error("Lỗi", "Không thể cập nhật tồn kho");
     }
   };
 
@@ -157,7 +158,7 @@ const ManageBookPage = () => {
                       <XCircleIcon className="w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => navigate(`/book/${book.id}`)}
+                      onClick={() => navigate(`/product/${book.id}`)}
                       className="text-gray-600 hover:text-gray-800"
                     >
                       <EyeIcon className="w-5 h-5" />

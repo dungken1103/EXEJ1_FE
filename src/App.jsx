@@ -22,7 +22,7 @@ import UserManage from "./pages/admin/UserManage"
 import AboutPage from "./pages/public/AboutPage";
 import ContactPage from "./pages/public/ContactPage";
 import AdminOrderPage from "./pages/admin/AdminOrderPage";
-import BookDetail from "./pages/public/BookDetail";
+import ProductDetail from "./pages/public/ProductDetail";
 import ShopBookPage from "./pages/public/ShopPage";
 import CheckoutPage from "./pages/user/CheckoutPage";
 function App() {
@@ -42,14 +42,6 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route
-          path="/reset-password"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <ResetPassword />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/deposit"
           element={
             <ProtectedRoute allowedRoles={["user"]}>
@@ -59,7 +51,7 @@ function App() {
         />
         <Route path="/checkout" element={<CheckoutPage />} />
 
-        <Route path="/book/:id" element={<BookDetail />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
         <Route
           path="/user/order"
           element={
@@ -72,6 +64,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/login-success" element={<GoogleLoginSuccess />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       
 
       <Route

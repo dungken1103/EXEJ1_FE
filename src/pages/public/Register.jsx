@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../services/axiosConfig";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Swal from "sweetalert2";
+import toast from "../../utils/toast";
 
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
@@ -58,31 +58,15 @@ const Register = () => {
         email: form.email,
         password: form.password,
       });
-      await Swal.fire({
-        title: "Đăng ký thành công!",
-        text: "Bạn đã có thể đăng nhập.",
-        icon: "success",
-        confirmButtonText: "Đồng ý",
-        confirmButtonColor: brandGreen,
-      });
+      toast.success("Đăng ký thành công!", "Bạn đã có thể đăng nhập.");
       navigate("/login");
     } catch (err) {
       if (err.response?.status === 409) {
         setErrors({ email: "Email này đã được sử dụng." });
       } else if (err.response?.status === 400) {
-        Swal.fire({
-          title: "Thông tin không hợp lệ",
-          text: "Vui lòng kiểm tra lại thông tin.",
-          icon: "warning",
-          confirmButtonColor: brandGreen,
-        });
+        toast.warning("Thông tin không hợp lệ", "Vui lòng kiểm tra lại thông tin.");
       } else {
-        Swal.fire({
-          title: "Lỗi hệ thống",
-          text: "Vui lòng thử lại sau.",
-          icon: "error",
-          confirmButtonColor: brandGreen,
-        });
+        toast.error("Lỗi hệ thống", "Vui lòng thử lại sau.");
       }
     } finally {
       setLoading(false);
