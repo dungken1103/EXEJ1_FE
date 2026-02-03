@@ -28,8 +28,8 @@ const AdminLayout = () => {
 
   const navigationItems = [
     { id: "dashboard", name: "Dashboard", icon: FaHome, path: "/admin-dashboard" },
-    { id: "book", name: "Book", icon: FaUsers, path: "/admin-dashboard/books" },
-    { id: "author", name: "Author", icon: FaFolder, path: "/admin-dashboard/authors" },
+    { id: "book", name: "Product", icon: FaUsers, path: "/admin-dashboard/books" },
+    // { id: "author", name: "Author", icon: FaFolder, path: "/admin-dashboard/authors" },
     { id: "category", name: "Category", icon: FaCalendar, path: "/admin-dashboard/categories" },
     { id: "order", name: "Order", icon: FaFileAlt, path: "/admin-dashboard/orders" },
   ];

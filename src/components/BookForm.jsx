@@ -56,7 +56,7 @@ export default function BookForm({ isEdit = false }) {
         })
         .catch((err) => {
           console.error("Error fetching book:", err);
-          toast.error("Không tìm thấy sách.");
+          toast.error("Không tìm thấy sản phẩm.");
         });
     }
   }, [isEdit, id]);
@@ -95,7 +95,7 @@ export default function BookForm({ isEdit = false }) {
       navigate("/admin-dashboard/books");
     } catch (err) {
       console.error("Error submitting book:", err);
-      toast.error(`${isEdit ? "Cập nhật" : "Tạo"} sách thất bại!`);
+      toast.error(`${isEdit ? "Cập nhật" : "Tạo"} sản phẩm thất bại!`);
     }
   };
 
@@ -108,7 +108,7 @@ export default function BookForm({ isEdit = false }) {
   return (
     <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-md my-10 py-10">
       <h2 className="text-xl font-bold mb-4 text-yellow-600">
-        {isEdit ? "Chỉnh sửa sách" : "Tạo sách mới"}
+        {isEdit ? "Chỉnh sửa sản phẩm" : "Tạo sản phẩm mới"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Các trường giống như trước */}
@@ -195,7 +195,7 @@ export default function BookForm({ isEdit = false }) {
           type="submit"
           className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
         >
-          {isEdit ? "Cập nhật sách" : "Tạo sách"}
+          {isEdit ? "Cập nhật sản phẩm" : "Tạo sản phẩm"}
         </button>
       </form>
     </div>

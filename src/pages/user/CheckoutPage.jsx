@@ -323,23 +323,7 @@ const CheckoutPage = () => {
               />
               Thanh toán khi nhận hàng (COD)
             </label>
-            {user && (
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="Wallet"
-                  checked={form.paymentMethod === "Wallet"}
-                  onChange={handleInputChange}
-                />
-                Thanh toán bằng ví
-              </label>
-            )}
-            {!user && (
-              <p className="text-sm text-gray-500 mt-1">
-                Đăng nhập để sử dụng thanh toán bằng ví.
-              </p>
-            )}
+            
           </div>
           <button
             onClick={handlePayment}

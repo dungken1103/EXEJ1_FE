@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL + "/books";
+const API_URL = import.meta.env.VITE_API_URL + "/products";
 
 const bookService = {
   // Tạo sách mới

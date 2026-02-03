@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bookService from "../../services/bookService";
+import productService from "../../services/productService";
 import toast from "../../utils/toast";
 import {
   PencilSquareIcon,
@@ -21,7 +22,7 @@ const ManageBookPage = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await bookService.getAll();
+      const res = await productService.getAll();
       let data = res.data;
       if (search.trim()) {
         data = data.filter((book) =>
