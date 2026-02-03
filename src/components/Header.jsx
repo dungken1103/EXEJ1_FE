@@ -14,6 +14,7 @@ import {
   HiOutlineClipboardDocumentList,
   HiOutlineArrowRightOnRectangle,
 } from "react-icons/hi2";
+import SafeImage from "./SafeImage";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3212";
 const getImageUrl = (path) => {
@@ -224,9 +225,8 @@ const Header = () => {
         />
       )}
       <div
-        className={`fixed top-0 ${side === "right" ? "right-0" : "left-0"} h-full w-full max-w-sm sm:max-w-md bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : side === "right" ? "translate-x-full" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 ${side === "right" ? "right-0" : "left-0"} h-full w-full max-w-sm sm:max-w-md bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${open ? "translate-x-0" : side === "right" ? "translate-x-full" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-bold" style={{ color: brandBrown }}>
@@ -359,7 +359,7 @@ const Header = () => {
                       onClick={() => setSearchOpen(false)}
                       className="flex gap-3 p-3 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100"
                     >
-                      <img
+                      <SafeImage
                         src={getImageUrl(p.image)}
                         alt={p.name}
                         className="w-14 h-14 object-cover rounded-lg flex-shrink-0 bg-gray-100"
@@ -403,7 +403,7 @@ const Header = () => {
                   const tempPrice = (p?.price || 0) * (item?.quantity || 0);
                   return (
                     <li key={p?.id || item.productId} className="flex gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <img src={getImageUrl(p?.image)} alt={name} className="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
+                      <SafeImage src={getImageUrl(p?.image)} alt={name} className="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-800 truncate">{name}</p>
                         <p className="text-sm text-gray-600 mt-1">{(p?.price || 0).toLocaleString("vi-VN")}₫ × {item.quantity}</p>
@@ -444,16 +444,15 @@ const Header = () => {
                       key={item.id}
                       className="flex gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100"
                     >
-                      <img
+                      <SafeImage
                         src={getImageUrl(p?.image)}
                         alt={name}
                         className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`font-medium text-gray-800 truncate ${
-                            outOfStock ? "opacity-60 line-through" : ""
-                          }`}
+                          className={`font-medium text-gray-800 truncate ${outOfStock ? "opacity-60 line-through" : ""
+                            }`}
                         >
                           {name}
                         </p>

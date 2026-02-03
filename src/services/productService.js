@@ -10,6 +10,18 @@ const productService = {
 
   search: (name, page = 1, limit = 10) =>
     axios.get(`${API_URL}/search`, { params: { name, page, limit } }),
+
+  create: (formData) =>
+    axios.post(`${API_URL}/create-product`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  update: (id, formData) =>
+    axios.patch(`${API_URL}/${id}/update-product`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  disable: (id) => axios.patch(`${API_URL}/${id}/disable`),
 };
 
 export default productService;

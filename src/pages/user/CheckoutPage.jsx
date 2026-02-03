@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import cartService from "../../services/cartService";
 import toast from "../../utils/toast";
+import SafeImage from "../../components/SafeImage";
+import Cookies from "js-cookie";
 
 const CheckoutPage = () => {
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const { user, isLoading, isAuthenticated } = useAuth();
   const [checkoutItems, setCheckoutItems] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -20,16 +25,24 @@ const CheckoutPage = () => {
     paymentMethod: "COD",
   });
 
+  // Check authentication after loading completes
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-    setUser(storedUser);
-    if (storedUser)
-      setForm((f) => ({
-        ...f,
-        name: storedUser.fullName || storedUser.name || "",
-        email: storedUser.email || "",
-        phone: storedUser.phone || "",
-      }));
+    if (isLoading) return; // Wait for auth context to load
+
+    if (!isAuthenticated || !user) {
+      toast.warning("Vui lòng đăng nhập để tiến hành thanh toán");
+      localStorage.setItem("redirect_after_login", "/checkout");
+      navigate("/login");
+      return;
+    }
+
+    // Set form with user data
+    setForm((f) => ({
+      ...f,
+      name: user.fullName || user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+    }));
 
     const storedItems = JSON.parse(
       localStorage.getItem("checkout_items") || "[]"
@@ -40,7 +53,8 @@ const CheckoutPage = () => {
       .then((res) => res.json())
       .then(setProvinces)
       .catch(console.error);
-  }, []);
+  }, [isLoading, isAuthenticated, user, navigate]);
+
 
   const handleProvinceChange = (e) => {
     const provinceCode = Number(e.target.value);
@@ -86,8 +100,11 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
-    const isGuest = !user;
-    const paymentMethod = isGuest ? "COD" : form.paymentMethod;
+    if (!user) {
+      toast.warning("Vui lòng đăng nhập để tiến hành thanh toán");
+      navigate("/login");
+      return;
+    }
 
     if (
       !form.name?.trim() ||
@@ -100,18 +117,15 @@ const CheckoutPage = () => {
       toast.warning("Vui lòng điền đầy đủ thông tin người nhận và địa chỉ giao hàng.");
       return;
     }
-    if (isGuest && !form.email?.trim()) {
-      toast.warning("Vui lòng nhập email để nhận xác nhận đơn hàng.");
-      return;
-    }
     if (checkoutItems.length === 0) {
       toast.warning("Giỏ hàng trống. Vui lòng thêm sản phẩm.");
       return;
     }
 
     try {
+      const token = localStorage.getItem("token") || Cookies.get("token");
+
       const payload = {
-        userId: isGuest ? null : user.id,
         items: checkoutItems.map((item) => {
           const p = getProduct(item);
           return {
@@ -120,7 +134,7 @@ const CheckoutPage = () => {
             price: p.price || 0,
           };
         }),
-        payment: paymentMethod,
+        payment: form.paymentMethod,
         userAddress: {
           fullName: form.name,
           email: form.email || user?.email,
@@ -137,34 +151,55 @@ const CheckoutPage = () => {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3212";
       const res = await fetch(`${apiUrl}/order/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+          navigate("/login");
+          return;
+        }
         throw new Error(errData.message || "Đặt hàng thất bại");
       }
 
       localStorage.removeItem("checkout_items");
 
-      if (!isGuest && user?.id) {
-        for (const item of checkoutItems) {
-          if (item.id) {
-            try {
-              await cartService.removeItem(item.id, user.id);
-            } catch (_) {}
-          }
+      for (const item of checkoutItems) {
+        if (item.id) {
+          try {
+            await cartService.removeItem(item.id, user.id);
+          } catch (_) { }
         }
       }
 
       toast.success("Đặt hàng thành công!", "Chúng tôi sẽ liên hệ bạn sớm.");
       window.location.href = "/";
     } catch (err) {
+
       console.error(err);
       toast.error("Lỗi", err.message || "Có lỗi khi đặt hàng. Vui lòng thử lại.");
     }
   };
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">Đang tải...</p>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!isAuthenticated || !user) {
+    return null;
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -172,6 +207,7 @@ const CheckoutPage = () => {
       <div className="md:col-span-2">
         <div className="bg-white shadow p-6 rounded mb-6">
           <h2 className="text-lg font-semibold mb-4">Sản phẩm</h2>
+
           <ul className="divide-y">
             {checkoutItems.map((item) => {
               const p = getProduct(item);
@@ -180,7 +216,7 @@ const CheckoutPage = () => {
               const imgSrc = p.image?.startsWith("http") ? p.image : `${import.meta.env.VITE_API_URL || "http://localhost:3212"}${p.image}`;
               return (
                 <li key={itemKey} className="py-4 flex items-center gap-4">
-                  <img
+                  <SafeImage
                     src={imgSrc || "/images/waste_to_worth_logo.png"}
                     alt={p.name || p.title}
                     className="w-20 h-20 object-cover rounded"
@@ -323,23 +359,6 @@ const CheckoutPage = () => {
               />
               Thanh toán khi nhận hàng (COD)
             </label>
-            {user && (
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="Wallet"
-                  checked={form.paymentMethod === "Wallet"}
-                  onChange={handleInputChange}
-                />
-                Thanh toán bằng ví
-              </label>
-            )}
-            {!user && (
-              <p className="text-sm text-gray-500 mt-1">
-                Đăng nhập để sử dụng thanh toán bằng ví.
-              </p>
-            )}
           </div>
           <button
             onClick={handlePayment}

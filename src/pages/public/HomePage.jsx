@@ -17,6 +17,7 @@ import {
 } from 'react-icons/hi2';
 import categoryService from '../../services/categoryService';
 import productService from '../../services/productService';
+import SafeImage from '../../components/SafeImage';
 
 // Animate when element enters viewport
 const useInView = (options = {}) => {
@@ -40,9 +41,8 @@ const SectionReveal = ({ children, className = '' }) => {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      } ${className}`}
+      className={`transition-all duration-700 ease-out ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        } ${className}`}
     >
       {children}
     </div>
@@ -93,10 +93,10 @@ const HomePage = () => {
   const categoryBlocks = categories.length >= 3
     ? categories.slice(0, 4)
     : [
-        { id: '', name: 'Bản đồ Việt Nam', slug: 'ban-do-viet-nam' },
-        { id: '', name: 'Bản đồ theo vùng', slug: 'ban-do-theo-vung' },
-        { id: '', name: 'Mô hình mini', slug: 'mo-hinh-mini' },
-      ].slice(0, 4);
+      { id: '', name: 'Bản đồ Việt Nam', slug: 'ban-do-viet-nam' },
+      { id: '', name: 'Bản đồ theo vùng', slug: 'ban-do-theo-vung' },
+      { id: '', name: 'Mô hình mini', slug: 'mo-hinh-mini' },
+    ].slice(0, 4);
 
   return (
     <div
@@ -143,7 +143,7 @@ const HomePage = () => {
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none animate-fade-in animation-fill-both animation-delay-500">
-          <img
+          <SafeImage
             src="/images/waste_to_worth_logo.png"
             alt="Waste To Worth"
             className="w-28 sm:w-36 opacity-90 drop-shadow-2xl translate-y-1/2"
@@ -154,71 +154,71 @@ const HomePage = () => {
 
       {/* ═══ CATEGORY BLOCKS (Migo: Bản Đồ VN, Thế Giới, Các Nước, Decor) ═══ */}
       <SectionReveal>
-      <section className="px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            {categoryBlocks.map((cat) => (
-              <Link
-                key={cat.id || cat.slug}
-                to={cat.id ? `/shop?categoryId=${cat.id}` : '/shop'}
-                className="group relative block rounded-2xl overflow-hidden aspect-[4/3] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300"
-                style={{ backgroundColor: creamDark }}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                  <HiOutlineMap className="w-12 h-12 mb-3 opacity-80" style={{ color: brown.DEFAULT }} />
-                  <h3 className="text-lg font-bold" style={{ color: brown.DEFAULT }}>
-                    {cat.name}
-                  </h3>
-                  <span className="mt-2 text-sm font-medium flex items-center gap-1" style={{ color: green.DEFAULT }}>
-                    Shop now
-                    <HiOutlineArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </div>
-              </Link>
-            ))}
+        <section className="px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              {categoryBlocks.map((cat) => (
+                <Link
+                  key={cat.id || cat.slug}
+                  to={cat.id ? `/shop?categoryId=${cat.id}` : '/shop'}
+                  className="group relative block rounded-2xl overflow-hidden aspect-[4/3] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300"
+                  style={{ backgroundColor: creamDark }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <HiOutlineMap className="w-12 h-12 mb-3 opacity-80" style={{ color: brown.DEFAULT }} />
+                    <h3 className="text-lg font-bold" style={{ color: brown.DEFAULT }}>
+                      {cat.name}
+                    </h3>
+                    <span className="mt-2 text-sm font-medium flex items-center gap-1" style={{ color: green.DEFAULT }}>
+                      Shop now
+                      <HiOutlineArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </SectionReveal>
 
       {/* ═══ TAGLINE (Migo-style quote) ═══ */}
       <SectionReveal>
-      <section className="px-4 sm:px-6 lg:px-8 py-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xl sm:text-2xl font-medium text-gray-700 leading-relaxed">
-            “Từ gỗ bỏ đi ở xưởng mộc đến <span className="font-semibold" style={{ color: green.DEFAULT }}>mô hình bản đồ Việt Nam</span> trong tay bạn — không lãng phí, chỉ thêm giá trị.”
-          </p>
-        </div>
-      </section>
+        <section className="px-4 sm:px-6 lg:px-8 py-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-xl sm:text-2xl font-medium text-gray-700 leading-relaxed">
+              “Từ gỗ bỏ đi ở xưởng mộc đến <span className="font-semibold" style={{ color: green.DEFAULT }}>mô hình bản đồ Việt Nam</span> trong tay bạn — không lãng phí, chỉ thêm giá trị.”
+            </p>
+          </div>
+        </section>
       </SectionReveal>
 
       {/* ═══ VALUE PROPS (Migo: Handmade, Đa dạng, Khác biệt) ═══ */}
       <SectionReveal>
-      <section className="px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              { icon: HiOutlineCube, title: 'Handmade', desc: 'Sản phẩm được làm thủ công chi tiết tỉ mỉ từ gỗ quý tái chế, từng miếng ghép đều có vân gỗ độc đáo.', color: brown.DEFAULT },
-              { icon: HiOutlineSparkles, title: 'Đa dạng', desc: 'Mẫu mã đa dạng — bản đồ cơ bản, 63 tỉnh thành, theo vùng — đáp ứng nhu cầu trang trí và quà tặng.', color: green.DEFAULT },
-              { icon: HiOutlineMap, title: 'Khác biệt', desc: 'Khác biệt từ gỗ tái chế & CNC: sản phẩm làm nên không gian đặc biệt, thân thiện môi trường.', color: green.light },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="group p-6 sm:p-8 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300"
-              >
+        <section className="px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {[
+                { icon: HiOutlineCube, title: 'Handmade', desc: 'Sản phẩm được làm thủ công chi tiết tỉ mỉ từ gỗ quý tái chế, từng miếng ghép đều có vân gỗ độc đáo.', color: brown.DEFAULT },
+                { icon: HiOutlineSparkles, title: 'Đa dạng', desc: 'Mẫu mã đa dạng — bản đồ cơ bản, 63 tỉnh thành, theo vùng — đáp ứng nhu cầu trang trí và quà tặng.', color: green.DEFAULT },
+                { icon: HiOutlineMap, title: 'Khác biệt', desc: 'Khác biệt từ gỗ tái chế & CNC: sản phẩm làm nên không gian đặc biệt, thân thiện môi trường.', color: green.light },
+              ].map((item) => (
                 <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ backgroundColor: `${item.color}18`, color: item.color }}
+                  key={item.title}
+                  className="group p-6 sm:p-8 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300"
                 >
-                  <item.icon className="w-7 h-7" />
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+                    style={{ backgroundColor: `${item.color}18`, color: item.color }}
+                  >
+                    <item.icon className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2" style={{ color: brown.DEFAULT }}>{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: brown.DEFAULT }}>{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </SectionReveal>
 
       {/* ═══ CÁCH CHÚNG TÔI TẠO RA SẢN PHẨM ═══ */}
@@ -296,7 +296,7 @@ const HomePage = () => {
                   className="group block bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
                 >
                   <div className="aspect-square bg-gray-100">
-                    <img
+                    <SafeImage
                       src={getImageUrl(p.image)}
                       alt={p.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -460,7 +460,7 @@ const HomePage = () => {
       {/* ═══ ABOUT SNIPPET ═══ */}
       <section className="px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
         <div className="max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-12">
-          <img src="/images/waste_to_worth_logo.png" alt="Waste To Worth" className="w-40 h-auto opacity-95 flex-shrink-0" />
+          <SafeImage src="/images/waste_to_worth_logo.png" alt="Waste To Worth" className="w-40 h-auto opacity-95 flex-shrink-0" />
           <div className="text-center lg:text-left">
             <h2 className="text-2xl font-bold mb-4 font-brand" style={{ color: brown.DEFAULT }}>Waste To Worth</h2>
             <p className="text-gray-600 leading-relaxed mb-6 max-w-xl">

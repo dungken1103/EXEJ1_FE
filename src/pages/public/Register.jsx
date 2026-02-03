@@ -12,6 +12,7 @@ const Register = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -56,6 +57,7 @@ const Register = () => {
       await axios.post("/auth/register", {
         name: form.name,
         email: form.email,
+        phone: form.phone || undefined,
         password: form.password,
       });
       toast.success("Đăng ký thành công!", "Bạn đã có thể đăng nhập.");
@@ -109,9 +111,8 @@ const Register = () => {
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${
-                    errors.name ? "border-red-400 focus:ring-red-300" : "border-gray-200"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${errors.name ? "border-red-400 focus:ring-red-300" : "border-gray-200"
+                    }`}
                   placeholder="Nguyễn Văn A"
                   id="name"
                 />
@@ -129,15 +130,29 @@ const Register = () => {
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${
-                    errors.email ? "border-red-400 focus:ring-red-300" : "border-gray-200"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${errors.email ? "border-red-400 focus:ring-red-300" : "border-gray-200"
+                    }`}
                   placeholder="you@example.com"
                   id="email"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">{errors.email}</p>
                 )}
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-gray-700 mb-1.5 font-medium">
+                  Số điện thoại (tùy chọn)
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0"
+                  placeholder="0123456789"
+                  id="phone"
+                />
               </div>
 
               <div className="relative">
@@ -149,9 +164,8 @@ const Register = () => {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${
-                    errors.password ? "border-red-400 focus:ring-red-300" : "border-gray-200"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${errors.password ? "border-red-400 focus:ring-red-300" : "border-gray-200"
+                    }`}
                   placeholder="••••••••"
                   id="password"
                 />
@@ -177,9 +191,8 @@ const Register = () => {
                   name="confirmPassword"
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${
-                    errors.confirmPassword ? "border-red-400 focus:ring-red-300" : "border-gray-200"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${errors.confirmPassword ? "border-red-400 focus:ring-red-300" : "border-gray-200"
+                    }`}
                   placeholder="••••••••"
                   id="cf-password"
                 />

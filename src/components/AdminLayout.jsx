@@ -41,12 +41,11 @@ const AdminLayout = () => {
       icon: FaHome,
       path: "/admin-dashboard",
     },
-    { id: "book", name: "Book", icon: FaUsers, path: "/admin-dashboard/books" },
     {
-      id: "author",
-      name: "Author",
+      id: "products",
+      name: "Products",
       icon: FaFolder,
-      path: "/admin-dashboard/authors",
+      path: "/admin-dashboard/products",
     },
     {
       id: "category",
@@ -81,9 +80,8 @@ const AdminLayout = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <div
-        className={`${
-          isSidebarOpen ? "w-64" : "w-16"
-        } bg-gray-900 text-white transition-all duration-300 ease-in-out flex flex-col`}
+        className={`${isSidebarOpen ? "w-64" : "w-16"
+          } bg-gray-900 text-white transition-all duration-300 ease-in-out flex flex-col`}
       >
         <div className="flex flex-col h-full">
           {/* Logo Section */}
@@ -114,11 +112,10 @@ const AdminLayout = () => {
                     key={item.id}
                     to={item.path}
                     onClick={() => setActiveItem(item.id)}
-                    className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
-                      activeItem === item.id
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                    }`}
+                    className={`flex items-center px-3 py-2 rounded-lg transition-colors ${activeItem === item.id
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                      }`}
                   >
                     <Icon className="w-5 h-5" />
                     {isSidebarOpen && <span className="ml-3">{item.name}</span>}

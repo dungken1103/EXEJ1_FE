@@ -4,6 +4,7 @@ import { FaBox, FaShippingFast, FaCheckCircle, FaTrashAlt, FaTimesCircle } from 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import toast from '../../utils/toast';
+import SafeImage from "../../components/SafeImage";
 
 const MySwal = withReactContent(Swal);
 
@@ -83,19 +84,19 @@ const UserOrdersPage = () => {
   }, [selectedTab]);
 
   const fetchOrders = async () => {
-  try {
-    const params = { userId: user.id };
-    if (selectedTab) {
-      params.status = selectedTab; // giữ nguyên ENUM dạng "SHIPPING", "DELIVERED"
-    }
+    try {
+      const params = { userId: user.id };
+      if (selectedTab) {
+        params.status = selectedTab; // giữ nguyên ENUM dạng "SHIPPING", "DELIVERED"
+      }
 
-    const res = await axios.get(`/order/get`, { params });
-    console.log(res.data);
-    setOrders(res.data);
-  } catch (err) {
-    console.error("Lỗi lấy đơn hàng:", err);
-  }
-};
+      const res = await axios.get(`/order/get`, { params });
+      console.log(res.data);
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Lỗi lấy đơn hàng:", err);
+    }
+  };
 
 
   const renderOrderStatus = (status) => {
@@ -145,7 +146,7 @@ const UserOrdersPage = () => {
 
 
   return (
-     <div className="h-screen bg-[#FFEFD5] text-[#2F2F2F] font-sans">
+    <div className="h-screen bg-[#FFEFD5] text-[#2F2F2F] font-sans">
 
       <main
         ref={mainRef}
@@ -167,7 +168,7 @@ const UserOrdersPage = () => {
 
         <div className="space-y-4">
           {orders.map(order => {
-            
+
             return (
               <div
                 key={order.id}
@@ -176,7 +177,7 @@ const UserOrdersPage = () => {
                 {/* LEFT: Info + Detail */}
                 <div className="space-y-2">
                   <div className="text-lg font-semibold">Mã đơn: #{order.id}</div>
-                  
+
                   <div className="text-sm text-gray-700">
                     Tổng tiền: <span className="text-red-600 font-semibold">{order.total.toLocaleString()}₫</span>
                   </div>
@@ -244,7 +245,7 @@ const UserOrdersPage = () => {
                   return (
                     <li key={idx} className="flex justify-between items-center border-b py-2">
                       <div className="flex items-center gap-2">
-                        <img
+                        <SafeImage
                           src={firstImage}
                           alt={item.productName}
                           className="w-10 h-10 object-cover"
@@ -277,10 +278,10 @@ const UserOrdersPage = () => {
             </div>
           </div>
         )}
-        
+
       </main>
     </div>
-    
+
   );
 };
 

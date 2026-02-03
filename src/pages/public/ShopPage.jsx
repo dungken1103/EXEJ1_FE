@@ -7,6 +7,7 @@ import {
   HiOutlineShoppingBag,
   HiOutlineArrowRight,
 } from "react-icons/hi2";
+import SafeImage from "../../components/SafeImage";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3212";
 const getImageUrl = (path) => {
@@ -104,7 +105,7 @@ const ShopPage = () => {
             Cửa hàng mô hình bản đồ gỗ
           </h1>
           <p className="text-gray-600 max-w-2xl">
-            Khám phá bản đồ Việt Nam 3D từ gỗ quý tái chế — từ cơ bản đến chi tiết 63 tỉnh thành. 
+            Khám phá bản đồ Việt Nam 3D từ gỗ quý tái chế — từ cơ bản đến chi tiết 63 tỉnh thành.
             Chọn danh mục bên dưới hoặc xem tất cả sản phẩm.
           </p>
         </header>
@@ -123,11 +124,10 @@ const ShopPage = () => {
                 <button
                   type="button"
                   onClick={() => handleCategory("")}
-                  className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${
-                    !filters.categoryId
+                  className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${!filters.categoryId
                       ? "text-white font-medium"
                       : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                    }`}
                   style={!filters.categoryId ? { backgroundColor: brandGreen } : {}}
                 >
                   Tất cả sản phẩm
@@ -137,11 +137,10 @@ const ShopPage = () => {
                     key={cat.id}
                     type="button"
                     onClick={() => handleCategory(cat.id)}
-                    className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${
-                      filters.categoryId === cat.id
+                    className={`block w-full text-left px-4 py-3 rounded-xl mb-1 transition ${filters.categoryId === cat.id
                         ? "text-white font-medium"
                         : "text-gray-700 hover:bg-gray-50"
-                    }`}
+                      }`}
                     style={filters.categoryId === cat.id ? { backgroundColor: brandGreen } : {}}
                   >
                     {cat.name}
@@ -192,7 +191,7 @@ const ShopPage = () => {
                       className="group block bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
                     >
                       <div className="aspect-square bg-gray-100">
-                        <img
+                        <SafeImage
                           src={getImageUrl(p.image)}
                           alt={p.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

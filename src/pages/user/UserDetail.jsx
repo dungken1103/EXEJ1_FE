@@ -6,6 +6,7 @@ const UserDetail = () => {
     const user = {
         name: 'Nguyễn Văn A',
         email: 'nguyenvana@example.com',
+        phone: '0123456789',
         balance: 1500000,
         password: '123456',
     };
@@ -29,10 +30,9 @@ const UserDetail = () => {
                         <span className="font-semibold">Email: </span>
                         <span>{user.email}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold">Số dư ví: </span>
-                        <span className="text-green-600 font-bold">{user.balance.toLocaleString()} đ</span>
-                        <button className="ml-2 px-3 py-1 bg-violet-600 text-white rounded hover:bg-violet-700 text-sm">Nạp ví</button>
+                    <div>
+                        <span className="font-semibold">Số điện thoại: </span>
+                        <span>{user.phone || 'Chưa cập nhật'}</span>
                     </div>
                     <div>
                         <span className="font-semibold">Mật khẩu: </span>
@@ -63,8 +63,8 @@ const UserDetail = () => {
                                     <td className="px-4 py-2">
                                         <span className={
                                             order.status === 'Đã giao' ? 'text-green-600 font-semibold' :
-                                            order.status === 'Đã hủy' ? 'text-red-500 font-semibold' :
-                                            'text-yellow-600 font-semibold'
+                                                order.status === 'Đã hủy' ? 'text-red-500 font-semibold' :
+                                                    'text-yellow-600 font-semibold'
                                         }>
                                             {order.status}
                                         </span>
