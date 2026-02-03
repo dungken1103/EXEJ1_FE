@@ -75,6 +75,7 @@ const UserDetail = () => {
       {/* Right: Orders list */}
       <div className="md:w-2/3 w-full bg-white p-6 rounded-xl shadow-sm">
         <h2 className="text-xl font-bold mb-4">Danh sách đơn hàng</h2>
+        <a href="/user/order" className="text-blue-500 hover:underline">Xem tất cả</a>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
