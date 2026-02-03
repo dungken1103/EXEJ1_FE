@@ -1,0 +1,180 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
+import bookService from "../services/bookService";
+import authorService from "../services/authorServices";
+import categoryService from "../services/categoryService";
+import toast from "../utils/toast";
+
+export default function BookForm({ isEdit = false }) {
+  const { id } = useParams(); // <-- lấy id từ URL
+  const navigate = useNavigate();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  
+  const [categories, setCategories] = useState([]);
+  
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  // Fetch authors, categories, and book (if edit)
+  useEffect(() => {
+
+    categoryService
+      .getCategories()
+      .then((res) => setCategories(res ?? []))
+      .catch((err) => console.error("Error fetching categories:", err));
+
+    if (isEdit && id) {
+      bookService
+        .getById(id)
+        .then((res) => {
+          const book = res.data;
+          setDescription(book.description);
+          setPrice(book.price);
+          setPublishedAt(book.publishedAt?.split("T")[0] || "");
+          setImagePreview(book.image); // URL ảnh đã có sẵn
+
+          
+
+          setSelectedCategories(
+            book.categories.map((c) => ({ value: c.id, label: c.name }))
+          );
+        })
+        .catch((err) => {
+          console.error("Error fetching book:", err);
+          toast.error("Không tìm thấy sản phẩm.");
+        });
+    }
+  }, [isEdit, id]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("publishedAt", publishedAt);
+    if (imageFile) formData.append("image", imageFile);
+    selectedCategories.forEach((cat) =>
+      formData.append("categoryIds", cat.value)
+    );
+
+    try {
+      if (isEdit) {
+        await bookService.update(id, formData); // cần có hàm update
+      } else {
+        await bookService.create(formData);
+      }
+      navigate("/admin-dashboard/books");
+    } catch (err) {
+      console.error("Error submitting book:", err);
+      toast.error(`${isEdit ? "Cập nhật" : "Tạo"} sản phẩm thất bại!`);
+    }
+  };
+
+  const categoryOptions = categories.map((c) => ({
+    value: c.id,
+    label: c.name,
+  }));
+
+  return (
+    <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-md my-10 py-10">
+      <h2 className="text-xl font-bold mb-4 text-yellow-600">
+        {isEdit ? "Chỉnh sửa sản phẩm" : "Tạo sản phẩm mới"}
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Các trường giống như trước */}
+        <div>
+          <label className="font-medium">Tiêu đề</label>
+          <input
+            type="text"
+            className="w-full border rounded p-2"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Mô tả</label>
+          <textarea
+            className="w-full border rounded p-2"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Giá</label>
+          <input
+            type="number"
+            className="w-full border rounded p-2"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Ngày sản xuất</label>
+          <input
+            type="date"
+            className="w-full border rounded p-2"
+            value={publishedAt}
+            onChange={(e) => setPublishedAt(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Thể loại</label>
+          <Select
+            isMulti
+            options={categoryOptions}
+            value={selectedCategories}
+            onChange={setSelectedCategories}
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Ảnh bìa</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full border rounded p-2"
+          />
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-2 w-32 h-auto"
+            />
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+        >
+          {isEdit ? "Cập nhật sản phẩm" : "Tạo sản phẩm"}
+        </button>
+      </form>
+    </div>
+  );
+}

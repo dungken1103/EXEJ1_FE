@@ -234,31 +234,25 @@ const UserOrdersPage = () => {
               {/* Danh sách sản phẩm cuộn được */}
               <ul className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
                 {selectedOrder.items?.map((item, idx) => {
-                  let images = [];
-                  try {
-                    images = JSON.parse(item.image); // parse từ chuỗi JSON
-                  } catch (e) {
-                    console.error("Lỗi parse ảnh:", e);
-                  }
+                  console.log("Item:", item);
+                  console.log(selectedOrder);
 
-                  const firstImage = images[0];
                   return (
                     <li key={idx} className="flex justify-between items-center border-b py-2">
                       <div className="flex items-center gap-2">
-                        <SafeImage
-                          src={firstImage}
-                          alt={item.productName}
+                        <img
+                          src={`${import.meta.env.VITE_API_URL}${item.product.image}`}
                           className="w-10 h-10 object-cover"
                         />
                         <div className='flex flex-col'>
-                          <span>{item.productName} - {item.color} / {item.size}</span>
+                          <span>{item.product.name} </span>
                           <span className="text-xs text-gray-500">Số Lượng: {item.quantity}</span>
                         </div>
 
 
                       </div>
                       <div className="flex items-center gap-4">
-                        <div > Giá: <span className="text-red-600 font-semibold">{item.productPrice.toLocaleString()}đ</span></div>
+                        <div > Giá: <span className="text-red-600 font-semibold">{item.product.price.toLocaleString()}đ</span></div>
                       </div>
 
 

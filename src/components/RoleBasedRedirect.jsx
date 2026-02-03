@@ -16,7 +16,7 @@ const RoleBasedHome = () => {
   useEffect(() => {
     if (!isLoading && user?.role?.toLowerCase() === 'admin') {
       console.log("jijjiji");
-      navigate('/admin-dashboard/books', { replace: true });
+      navigate('/admin-dashboard/products', { replace: true });
       setRedirected(true);
     }
   }, [user, isLoading, navigate]);
