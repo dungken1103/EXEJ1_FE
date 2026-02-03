@@ -92,11 +92,11 @@ const CategoryManage = () => {
             <div className="bg-white rounded-2xl shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Quản lý Thể loại</h2>
-                        <p className="text-gray-500 text-sm mt-1">Danh sách thể loại trong hệ thống</p>
+                        <h2 className="text-2xl font-bold text-[#2d5a27]">Quản lý Thể loại</h2>
+                        <p className="text-[#2d5a27] text-sm mt-1">Danh sách thể loại trong hệ thống</p>
                     </div>
                     <button
-                        className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
+                        className="bg-[#2d5a27] hover:bg-[#599b50] text-white font-semibold px-6 py-2 rounded-lg transition-colors"
                         onClick={() => handleOpenModal()}
                     >
                         Thêm thể loại
@@ -105,10 +105,10 @@ const CategoryManage = () => {
 
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-[#2d5a27]">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tên thể loại</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Thao tác</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase">Tên thể loại</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -127,7 +127,7 @@ const CategoryManage = () => {
                                         <td className="px-6 py-4 text-sm text-gray-900">{category.name}</td>
                                         <td className="px-6 py-4 text-right text-sm font-medium">
                                             <button
-                                                className="text-violet-600 hover:text-violet-900 mr-4"
+                                                className="text-[#2d5a27] hover:text-[#24531e] mr-4"
                                                 onClick={() => handleOpenModal(category)}
                                             >
                                                 Chỉnh sửa

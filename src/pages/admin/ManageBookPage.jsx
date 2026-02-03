@@ -25,7 +25,7 @@ const ManageBookPage = () => {
       let data = res.data;
       if (search.trim()) {
         data = data.filter((book) =>
-          book.title.toLowerCase().includes(search.toLowerCase())
+          book.title.toLowerCase().includes(search.toLowerCase()),
         );
       }
       setBooks(data);
@@ -77,135 +77,119 @@ const ManageBookPage = () => {
     fetchBooks();
   }, [search]);
 
+  const IconBtn = ({ children, onClick, danger, green }) => (
+    <button
+      onClick={onClick}
+      className={`p-2 rounded-lg transition ${
+        danger
+          ? "bg-red-100 text-red-700 hover:bg-red-200"
+          : green
+            ? "bg-green-100 text-green-700 hover:bg-green-200"
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }`}
+    >
+      {children}
+    </button>
+  );
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">📚 Book Management</h1>
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-[#2d5a27]">Quản lý sách</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Quản lý danh sách sách trong hệ thống
+          </p>
+        </div>
         <button
           onClick={() => navigate("/admin-dashboard/books/new")}
-          className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
+          className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-white shadow"
+          style={{ backgroundColor: "#2d5a27" }}
         >
-          <PlusIcon className="w-5 h-5" /> Add Book
+          <PlusIcon className="w-5 h-5" />
+          Thêm sách
         </button>
       </div>
 
       {/* Search */}
-      <div className="mb-4">
+      <div className="mb-5">
         <input
           type="text"
-          placeholder="Search by book title..."
-          className="border px-4 py-2 w-full rounded-lg"
+          placeholder="🔍 Tìm theo tên sách..."
+          className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-[#2d5a27] outline-none"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-white shadow rounded-lg">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th className="px-4 py-2 text-left">Image</th>
-              <th className="px-4 py-2 text-left">Title</th>
-              <th className="px-4 py-2">Price</th>
-              <th className="px-4 py-2">Stock</th>
-              <th className="px-4 py-2">Sold</th>
-              <th className="px-4 py-2 text-center">Actions</th>
+      {/* Table Card */}
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-[#ebe5dc] text-sm text-[#5D4E37]">
+            <tr>
+              <th className="px-5 py-3 text-left">Ảnh</th>
+              <th className="px-5 py-3 text-left">Tên sách</th>
+              <th className="px-5 py-3">Giá</th>
+              <th className="px-5 py-3">Tồn</th>
+              <th className="px-5 py-3">Đã bán</th>
+              <th className="px-5 py-3 text-center">Thao tác</th>
             </tr>
           </thead>
+
           <tbody>
-            {books.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="text-center py-4 text-gray-500">
-                  No books found.
+            {books.map((book) => (
+              <tr
+                key={book.id}
+                className="border-t hover:bg-[#f8f5f0] transition"
+              >
+                <td className="px-5 py-3">
+                  {book.image ? (
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}${book.image}`}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-xs">
+                      No img
+                    </div>
+                  )}
                 </td>
-              </tr>
-            ) : (
-              books.map((book) => (
-                <tr key={book.id} className="border-t">
-                  <td className="px-4 py-2">
-                    {book.image ? (
-                      <img
-                        src={`${import.meta.env.VITE_API_URL}${book.image}`}
-                        alt={book.title}
-                        className="h-12 w-12 object-cover rounded"
-                      />
-                    ) : (
-                      <div className="h-12 w-12 bg-gray-100 flex items-center justify-center text-xs text-gray-400">
-                        No image
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-2">{book.title}</td>
-                  <td className="px-4 py-2">
-                    {Number(book.price).toLocaleString()} đ
-                  </td>
-                  <td className="px-4 py-2 text-center">{book.stock || 0}</td>
-                  <td className="px-4 py-2 text-center">{book.sold || 0}</td>
-                  <td className="px-4 py-2 flex justify-center gap-3">
-                    <button
+
+                <td className="px-5 py-3 font-medium">{book.title}</td>
+
+                <td className="px-5 py-3 text-center text-[#7a3e2e] font-semibold">
+                  {Number(book.price).toLocaleString()} đ
+                </td>
+
+                <td className="px-5 py-3 text-center">{book.stock || 0}</td>
+                <td className="px-5 py-3 text-center">{book.sold || 0}</td>
+
+                <td className="px-5 py-3">
+                  <div className="flex justify-center gap-3">
+                    <IconBtn
                       onClick={() =>
                         navigate(`/admin-dashboard/books/edit/${book.id}`)
                       }
-                      className="text-blue-600 hover:text-blue-800"
                     >
-                      <PencilSquareIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDisable(book.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <XCircleIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => navigate(`/product/${book.id}`)}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      <EyeIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => openAddStockModal(book)}
-                      className="text-green-600 hover:text-green-800"
-                    >
-                      <PlusIcon className="w-5 h-5" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
+                      <PencilSquareIcon />
+                    </IconBtn>
+                    <IconBtn danger onClick={() => handleDisable(book.id)}>
+                      <XCircleIcon />
+                    </IconBtn>
+                    <IconBtn onClick={() => navigate(`/product/${book.id}`)}>
+                      <EyeIcon />
+                    </IconBtn>
+                    <IconBtn green onClick={() => openAddStockModal(book)}>
+                      <PlusIcon />
+                    </IconBtn>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-md w-80">
-            <h3 className="font-bold mb-2">Add Stock</h3>
-            <input
-              type="number"
-              value={addQuantity}
-              onChange={(e) => setAddQuantity(Number(e.target.value))}
-              className="border rounded p-2 w-full mb-4"
-              placeholder="Enter quantity to add"
-            />
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-3 py-1 border rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddStock}
-                className="px-3 py-1 bg-green-500 text-white rounded"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
