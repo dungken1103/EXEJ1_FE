@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 function GoogleLoginSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
+  const apiBaseUrl = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -17,7 +19,7 @@ function GoogleLoginSuccess() {
     }
 
     // Gọi API lấy thông tin user theo email
-    fetch(`http://localhost:3212/users/email/${encodeURIComponent(email)}`, {
+    fetch(`${apiBaseUrl}/users/email/${encodeURIComponent(email)}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

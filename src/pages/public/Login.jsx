@@ -16,6 +16,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useAuth();
+  const apiBaseUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const validate = () => {
@@ -56,7 +57,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3212/auth/google";
+    window.location.href = `${apiBaseUrl}/auth/google`;
   };
 
   return (
