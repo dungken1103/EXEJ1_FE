@@ -98,6 +98,8 @@ const AdminOrderPage = () => {
       showCancelButton: true,
       confirmButtonText: 'Phê duyệt',
       cancelButtonText: 'Hủy',
+      confirmButtonColor: '#2d5a27',
+      cancelButtonColor: '#6b7280',
     });
 
     if (result.isConfirmed) {
@@ -121,6 +123,8 @@ const AdminOrderPage = () => {
       showCancelButton: true,
       confirmButtonText: 'Hủy đơn',
       cancelButtonText: 'Quay lại',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6b7280',
     });
 
     if (result.isConfirmed) {
@@ -144,6 +148,8 @@ const AdminOrderPage = () => {
       showCancelButton: true,
       confirmButtonText: 'Giao hàng',
       cancelButtonText: 'Hủy',
+      confirmButtonColor: '#2d5a27',
+      cancelButtonColor: '#6b7280',
     });
 
     if (result.isConfirmed) {
@@ -280,13 +286,12 @@ const AdminOrderPage = () => {
 const IconBtn = ({ children, onClick, green, danger }) => (
   <button
     onClick={onClick}
-    className={`p-2 rounded-lg transition ${
-      danger
+    className={`p-2 rounded-lg transition ${danger
         ? "bg-red-100 text-red-700 hover:bg-red-200"
         : green
-        ? "bg-green-100 text-green-700 hover:bg-green-200"
-        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-    }`}
+          ? "bg-green-100 text-green-700 hover:bg-green-200"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }`}
   >
     {children}
   </button>

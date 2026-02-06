@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { useAuth } from "../../contexts/AuthContext";
 import cartService from "../../services/cartService";
 import toast from "../../utils/toast";
@@ -19,6 +21,8 @@ import {
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
 const cream = "#f8f5f0";
+
+const MySwal = withReactContent(Swal);
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -192,8 +196,15 @@ const CheckoutPage = () => {
         }
       }
 
-      toast.success("Đặt hàng thành công!", "Chúng tôi sẽ liên hệ bạn sớm.");
-      window.location.href = "/";
+      await MySwal.fire({
+        title: 'Đặt hàng thành công!',
+        text: 'Cảm ơn bạn đã mua hàng. Chúng tôi sẽ liên hệ sớm để xác nhận.',
+        icon: 'success',
+        confirmButtonText: 'Về trang chủ',
+        confirmButtonColor: brandGreen,
+      }).then(() => {
+        window.location.href = "/";
+      });
     } catch (err) {
 
       console.error(err);
@@ -480,8 +491,8 @@ const CheckoutPage = () => {
                 <p className="font-semibold text-gray-700 mb-3">Phương thức thanh toán</p>
                 <label
                   className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${form.paymentMethod === "COD"
-                      ? "border-[#2d5a27] bg-[#2d5a27]/5"
-                      : "border-gray-100 hover:border-gray-200"
+                    ? "border-[#2d5a27] bg-[#2d5a27]/5"
+                    : "border-gray-100 hover:border-gray-200"
                     }`}
                 >
                   <input

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../services/axiosConfig";
+import { useAuth } from "../contexts/AuthContext";
 import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
 import {
   FaHome,
@@ -61,19 +62,10 @@ const AdminLayout = () => {
     },
   ];
 
-  const handleLogout = async () => {
-    try {
-      // Gửi request đến server để xóa cookie
-      await axios.post("/auth/logout", {}, { withCredentials: true });
+  const { logout } = useAuth(); // Destructuring from useAuth
 
-      // Xóa dữ liệu ở localStorage
-      localStorage.removeItem("user");
-
-      // Chuyển hướng và reset state
-      navigate(`/`);
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleLogout = () => {
+    logout(); // Use the context logout which handles state clearing and redirect
   };
 
   return (

@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('user');
-    window.location.href = '/login'; // hoặc navigate('/login')
+    setUser(null);
+    window.location.href = '/';
   };
 
   const isAuthenticated = !!user;

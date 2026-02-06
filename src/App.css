@@ -61,3 +61,25 @@
   font-style: italic;
   letter-spacing: 0.03em;
 }
+
+/* SweetAlert2 Button Fix */
+.swal2-container .swal2-styled.swal2-confirm {
+  background-color: #2d5a27; /* Brand Green default */
+  color: #fff;
+}
+
+.swal2-container .swal2-styled.swal2-cancel {
+  background-color: #6b7280; /* Gray default */
+  color: #fff;
+}
+
+/* Ensure hover states are also nice */
+.swal2-container .swal2-styled.swal2-confirm:hover {
+  background-color: #1e3f1a;
+  background-image: none !important; /* Prevent default gradients if any */
+}
+
+.swal2-container .swal2-styled.swal2-cancel:hover {
+  background-color: #4b5563;
+  background-image: none !important;
+}
