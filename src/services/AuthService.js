@@ -28,7 +28,7 @@ export const authService = {  async login(credentials: LoginRequest): Promise<Au
         apiClient.setAuthToken(authData.access_token);
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(authData.user));
-          localStorage.setItem('token', authData.access_token);
+          
         }
       }
       
@@ -57,7 +57,7 @@ export const authService = {  async login(credentials: LoginRequest): Promise<Au
         apiClient.setAuthToken(authData.access_token);
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(authData.user));
-          localStorage.setItem('token', authData.access_token);
+         
         }
       }
       
