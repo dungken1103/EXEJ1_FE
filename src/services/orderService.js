@@ -1,14 +1,10 @@
-import axios from "axios";
+import api from "./axiosConfig";
 
-const base_URL = `${import.meta.env.VITE_API_URL}/`;
-
-const instance = axios.create({
-  baseURL: base_URL,
-});
+const API_PATH = "/order";
 
 const getOrders = async () => {
   try {
-    const res = await instance.get('order/');
+    const res = await api.get(`${API_PATH}/`);
     return res.data;
   } catch (err) {
     console.error('Error fetching orders:', err);
@@ -18,7 +14,7 @@ const getOrders = async () => {
 
 const getOrderById = async (id) => {
   try {
-    const res = await instance.get(`order/${id}`);
+    const res = await api.get(`${API_PATH}/${id}`);
     return res.data;
   } catch (err) {
     console.error('Error fetching order by ID:', err);
@@ -26,9 +22,19 @@ const getOrderById = async (id) => {
   }
 };
 
+const createOrder = async (orderData) => {
+  try {
+    const res = await api.post(`${API_PATH}/create`, orderData);
+    return res.data;
+  } catch (err) {
+    console.error('Error creating order:', err);
+    throw err;
+  }
+};
+
 const updateOrder = async (id, orderData) => {
   try {
-    const res = await instance.put(`order/${id}`, orderData);
+    const res = await api.put(`${API_PATH}/${id}`, orderData);
     return res.data;
   } catch (err) {
     console.error('Error updating order:', err);
@@ -38,7 +44,7 @@ const updateOrder = async (id, orderData) => {
 
 const deleteOrder = async (id) => {
   try {
-    const res = await instance.delete(`order/${id}`);
+    const res = await api.delete(`${API_PATH}/${id}`);
     return res.data;
   } catch (err) {
     console.error('Error deleting order:', err);
@@ -48,7 +54,7 @@ const deleteOrder = async (id) => {
 
 const getOrderByUserId = async (id) => {
   try {
-    const res = await instance.get(`order/user-orders/${id}`);
+    const res = await api.get(`${API_PATH}/user-orders/${id}`);
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -61,6 +67,7 @@ const getOrderByUserId = async (id) => {
 export default {
   getOrders,
   getOrderById,
+  createOrder,
   updateOrder,
   deleteOrder,
   getOrderByUserId
