@@ -50,6 +50,8 @@ const Login = () => {
 });
       const user = res.data.data.user;
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", res.data.data.access_token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.data.access_token}`;
       setUser(user);
       navigate("/", { replace: true });
     } catch (err) {
