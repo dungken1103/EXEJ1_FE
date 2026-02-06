@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./axiosConfig";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3212";
 const API_URL = `${API_BASE}/products`;
@@ -9,6 +9,9 @@ const productService = {
   getAll: (params) => axios.get(API_URL, { params }),
 
   search: (name, page = 1, limit = 10) =>
+    axios.get(`${API_URL}/search`, { params: { name, page, limit } }),
+
+  getProductsByName: (name, page = 1, limit = 10) =>
     axios.get(`${API_URL}/search`, { params: { name, page, limit } }),
 
   create: (formData) =>
@@ -22,6 +25,8 @@ const productService = {
     }),
 
   disable: (id) => axios.patch(`${API_URL}/${id}/disable`),
+
+  delete: (id) => axios.delete(`${API_URL}/${id}`),
 };
 
 export default productService;

@@ -11,6 +11,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
+import AdminOrderModal from './AdminOrderModal';
 
 const MySwal = withReactContent(Swal);
 
@@ -71,13 +72,15 @@ const statusMap = {
 const AdminOrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [filterStatus, setFilterStatus] = useState('');
+  const [activeOrder, setActiveOrder] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchOrders();
   }, [filterStatus]);
 
-  /* ===== LOGIC GIỮ NGUYÊN ===== */
+  /* ===== LOGIC ===== */
 
   const fetchOrders = async () => {
     try {
@@ -166,7 +169,16 @@ const AdminOrderPage = () => {
   };
 
   const handleView = (orderId) => {
-    navigate(`/admin/order/detail/${orderId}`);
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      setActiveOrder(order);
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setActiveOrder(null);
   };
 
   /* ================== UI ================== */
@@ -202,81 +214,96 @@ const AdminOrderPage = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-[#ebe5dc] text-[#5D4E37]">
-            <tr>
-              <th className="px-4 py-3 text-left">Mã đơn</th>
-              <th className="px-4 py-3 text-left">Người nhận</th>
-              <th className="px-4 py-3">SĐT</th>
-              <th className="px-4 py-3">Địa chỉ</th>
-              <th className="px-4 py-3">Thời gian</th>
-              <th className="px-4 py-3">Tổng tiền</th>
-              <th className="px-4 py-3">Trạng thái</th>
-              <th className="px-4 py-3 text-center">Hành động</th>
-            </tr>
-          </thead>
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[1000px]">
+            <thead className="bg-[#ebe5dc] text-[#5D4E37]">
+              <tr>
+                <th className="px-4 py-3 text-left">Mã đơn</th>
+                <th className="px-4 py-3 text-left">Người nhận</th>
+                <th className="px-4 py-3 text-center">SĐT</th>
+                <th className="px-4 py-3">Địa chỉ</th>
+                <th className="px-4 py-3">Thời gian</th>
+                <th className="px-4 py-3">Tổng tiền</th>
+                <th className="px-4 py-3">Trạng thái</th>
+                <th className="px-4 py-3 text-center">Hành động</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {orders.map(order => {
-              const address = order.userAddress;
-              const status = statusMap[order.status] || statusMap.default;
+            <tbody>
+              {orders.map(order => {
+                const address = order.userAddress;
+                const status = statusMap[order.status] || statusMap.default;
 
-              return (
-                <tr
-                  key={order.id}
-                  className="border-t hover:bg-[#f8f5f0] transition"
-                >
-                  <td className="px-4 py-3">{order.id}</td>
-                  <td className="px-4 py-3 font-medium">{address.fullName}</td>
-                  <td className="px-4 py-3 text-center">{address.phone}</td>
-                  <td className="px-4 py-3">
-                    {`${address.addressDetail}, ${address.ward}, ${address.district}, ${address.province}`}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-[#7a3e2e] font-semibold whitespace-nowrap">
-                    {order.total?.toLocaleString()} ₫
-                  </td>
+                return (
+                  <tr
+                    key={order.id}
+                    className="border-t hover:bg-[#f8f5f0] transition"
+                  >
+                    <td className="px-4 py-3 font-mono text-xs">{order.id.slice(0, 8)}...</td>
+                    <td className="px-4 py-3 font-medium">{address?.fullName}</td>
+                    <td className="px-4 py-3 text-center">{address?.phone}</td>
+                    <td className="px-4 py-3 max-w-[200px] truncate" title={`${address?.addressDetail}, ${address?.ward}, ${address?.district}, ${address?.province}`}>
+                      {`${address?.addressDetail}, ${address?.ward}, ${address?.district}, ${address?.province}`}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {new Date(order.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-[#7a3e2e] font-semibold whitespace-nowrap">
+                      {order.total?.toLocaleString()} ₫
+                    </td>
 
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${status.className}`}>
-                      {status.icon}
-                      {status.label}
-                    </span>
-                  </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${status.className}`}>
+                        {status.icon}
+                        {status.label}
+                      </span>
+                    </td>
 
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center gap-2">
-                      <IconBtn onClick={() => handleView(order.id)}>
-                        <FaEye />
-                      </IconBtn>
-
-                      {order.status === "PENDING" && (
-                        <>
-                          <IconBtn green onClick={() => handleApprove(order.id)}>
-                            <FaCheckCircle />
-                          </IconBtn>
-                          <IconBtn danger onClick={() => handleCancel(order.id)}>
-                            <FaTimesCircle />
-                          </IconBtn>
-                        </>
-                      )}
-
-                      {order.status === "CONFIRMED" && (
-                        <IconBtn green onClick={() => handleAssigned(order.id)}>
-                          <FaShippingFast />
+                    <td className="px-4 py-3">
+                      <div className="flex justify-center gap-2">
+                        <IconBtn onClick={() => handleView(order.id)}>
+                          <FaEye />
                         </IconBtn>
-                      )}
-                    </div>
-                  </td>
+
+                        {order.status === "PENDING" && (
+                          <>
+                            <IconBtn green onClick={() => handleApprove(order.id)}>
+                              <FaCheckCircle />
+                            </IconBtn>
+                            <IconBtn danger onClick={() => handleCancel(order.id)}>
+                              <FaTimesCircle />
+                            </IconBtn>
+                          </>
+                        )}
+
+                        {order.status === "CONFIRMED" && (
+                          <IconBtn green onClick={() => handleAssigned(order.id)}>
+                            <FaShippingFast />
+                          </IconBtn>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {orders.length === 0 && (
+                <tr>
+                  <td colSpan="8" className="text-center py-8 text-gray-500">Chưa có đơn hàng nào.</td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <AdminOrderModal
+          order={activeOrder}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
@@ -287,10 +314,10 @@ const IconBtn = ({ children, onClick, green, danger }) => (
   <button
     onClick={onClick}
     className={`p-2 rounded-lg transition ${danger
-        ? "bg-red-100 text-red-700 hover:bg-red-200"
-        : green
-          ? "bg-green-100 text-green-700 hover:bg-green-200"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      ? "bg-red-100 text-red-700 hover:bg-red-200"
+      : green
+        ? "bg-green-100 text-green-700 hover:bg-green-200"
+        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
   >
     {children}

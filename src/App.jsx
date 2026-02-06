@@ -11,7 +11,7 @@ import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
 import ManageCategoryPage from "./pages/admin/ManageCategoryPage";
 import ManageProductPage from "./pages/admin/ManageProductPage";
-import ProductForm from "./pages/admin/ProductForm";
+import ProductModal from "./pages/admin/ProductModal";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRedirect from "./components/RoleBasedRedirect";
 import UserOrdersPage from "./pages/user/UserOrdersPage";
@@ -19,6 +19,7 @@ import UserManage from "./pages/admin/UserManage"
 import AboutPage from "./pages/public/AboutPage";
 import ContactPage from "./pages/public/ContactPage";
 import AdminOrderPage from "./pages/admin/AdminOrderPage";
+import ManageWoodTypePage from "./pages/admin/ManageWoodTypePage";
 import ProductDetail from "./pages/public/ProductDetail";
 import ShopBookPage from "./pages/public/ShopPage";
 import CheckoutPage from "./pages/user/CheckoutPage";
@@ -67,9 +68,10 @@ function App() {
         <Route path="/admin-dashboard/users" element={<UserManage />} />
         <Route path="/admin-dashboard/categories" element={<ManageCategoryPage />} />
         <Route path="/admin-dashboard/products" element={<ManageProductPage />} />
-        <Route path="/admin-dashboard/products/new" element={<ProductForm />} />
-        <Route path="/admin-dashboard/products/edit/:id" element={<ProductForm />} />
+        {/* <Route path="/admin-dashboard/products/new" element={<ProductForm />} /> */}
+        {/* <Route path="/admin-dashboard/products/edit/:id" element={<ProductForm />} /> */}
         <Route path="/admin-dashboard/orders" element={<AdminOrderPage />} />
+        <Route path="/admin-dashboard/wood-types" element={<ManageWoodTypePage />} />
       </Route>
     </Routes >
   );
