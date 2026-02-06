@@ -1,43 +1,38 @@
-import axios from "axios";
+import api from "./axiosConfig";
 
-const API_URL = import.meta.env.VITE_API_URL + "/cart";
+const API_PATH = "/cart";
 
 const cartService = {
   // Lấy giỏ hàng
   getCart: (userId) =>
-    axios.get(`${API_URL}`, {
+    api.get(`${API_PATH}`, {
       params: { userId },
-      withCredentials: true,
     }),
 
   // Thêm vào giỏ (productId - backend dùng product)
   addToCart: (userId, productId, quantity = 1) =>
-    axios.post(
-      `${API_URL}/add`,
-      { userId, productId, quantity },
-      { withCredentials: true }
+    api.post(
+      `${API_PATH}/add`,
+      { userId, productId, quantity }
     ),
 
   // Cập nhật số lượng
   updateQuantity: (cartItemId, userId, quantity) =>
-    axios.patch(
-      `${API_URL}/${cartItemId}/quantity`,
-      { userId, quantity },
-      { withCredentials: true }
+    api.patch(
+      `${API_PATH}/${cartItemId}/quantity`,
+      { userId, quantity }
     ),
 
   // Xóa 1 item
   removeItem: (cartItemId, userId) =>
-    axios.delete(`${API_URL}/${cartItemId}`, {
+    api.delete(`${API_PATH}/${cartItemId}`, {
       data: { userId },
-      withCredentials: true,
     }),
 
   // Xóa toàn bộ giỏ
   clearCart: (userId) =>
-    axios.delete(`${API_URL}`, {
+    api.delete(`${API_PATH}`, {
       params: { userId },
-      withCredentials: true,
     }),
 };
 

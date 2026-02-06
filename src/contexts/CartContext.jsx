@@ -9,24 +9,31 @@ export const useCart = () => useContext(CartContext);
 
 export function CartProvider({ children }) {
   const { user } = useAuth(); // lấy từ AuthContext
-  const [cartCount, setCartCount] = useState(0);
+  const [cart, setCart] = useState([]);
 
-  const refreshCartCount = async () => {
-    if (!user?.id) return;
+  const refreshCart = async () => {
+    if (!user?.id) {
+      setCart([]);
+      return;
+    }
     try {
       const res = await cartService.getCart(user.id);
-      setCartCount(res.data.length);
+      const data = res.data?.data ?? res.data;
+      setCart(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to load cart", err);
+      setCart([]);
     }
   };
 
   useEffect(() => {
-    refreshCartCount();
+    refreshCart();
   }, [user?.id]); // khi user đổi -> refresh
 
+  const cartCount = cart.length;
+
   return (
-    <CartContext.Provider value={{ cartCount, refreshCartCount }}>
+    <CartContext.Provider value={{ cart, cartCount, refreshCart }}>
       {children}
     </CartContext.Provider>
   );

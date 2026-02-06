@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function GoogleLoginSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setUser } = useAuth();
   const apiBaseUrl = import.meta.env.VITE_API_URL;
 
 
@@ -33,6 +35,9 @@ function GoogleLoginSuccess() {
 
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('token', token);
+
+        // Update Auth Context
+        setUser(data);
 
         navigate('/');
       })

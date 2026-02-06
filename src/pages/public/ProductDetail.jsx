@@ -35,7 +35,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { refreshCartCount } = useCart();
+  const { refreshCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -86,7 +86,7 @@ const ProductDetail = () => {
 
     try {
       await cartService.addToCart(user.id, product.id, quantity);
-      if (refreshCartCount) refreshCartCount();
+      if (refreshCart) refreshCart();
       toast.success("Đã thêm vào giỏ hàng");
     } catch (err) {
       console.error("Error adding to cart:", err);

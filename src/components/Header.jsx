@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import cartService from "../services/cartService";
 import productService from "../services/productService";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 import useDebounce from "../hooks/useDebounce";
 import {
   HiOutlineShoppingCart,
@@ -36,7 +37,7 @@ const navLinks = [
 const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [cart, setCart] = useState([]);
+  const { cart, cartCount, refreshCart } = useCart();
   const [selectedItems, setSelectedItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -45,58 +46,17 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [guestCart, setGuestCart] = useState([]);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const readGuestCart = () => {
-    try {
-      const raw = localStorage.getItem("checkout_items");
-      const list = raw ? JSON.parse(raw) : [];
-      setGuestCart(Array.isArray(list) ? list : []);
-    } catch {
-      setGuestCart([]);
-    }
-  };
-
   useEffect(() => {
-    if (user?.id) fetchCart(user.id);
-    else readGuestCart();
+    // Cart is now managed by Context, no local fetch needed
   }, [user?.id]);
-
-  useEffect(() => {
-    if (!user && cartOpen) readGuestCart();
-  }, [cartOpen, user]);
-
-  useEffect(() => {
-    const onGuestCartUpdate = () => { if (!user) readGuestCart(); };
-    window.addEventListener("storage", onGuestCartUpdate);
-    window.addEventListener("guestCartUpdated", onGuestCartUpdate);
-    return () => {
-      window.removeEventListener("storage", onGuestCartUpdate);
-      window.removeEventListener("guestCartUpdated", onGuestCartUpdate);
-    };
-  }, [user]);
-
-  const fetchCart = async (userId) => {
-    if (!userId) return;
-    try {
-      const res = await cartService.getCart(userId);
-      const data = res.data?.data ?? res.data;
-      const items = Array.isArray(data) ? data : [];
-      setCart(items);
-      setSelectedItems([]);
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-      setCart([]);
-      setSelectedItems([]);
-    }
-  };
 
   const deleteCartItem = async (itemId) => {
     if (!user?.id) return;
     try {
       await cartService.removeItem(itemId, user.id);
-      setCart((prev) => prev.filter((item) => item.id !== itemId));
+      refreshCart();
       setSelectedItems((prev) => prev.filter((id) => id !== itemId));
     } catch (err) {
       console.error("Error deleting cart item:", err);
@@ -112,26 +72,20 @@ const Header = () => {
     if (prod.stock !== 0 && newQuantity > prod.stock) return;
     try {
       await cartService.updateQuantity(itemId, user.id, newQuantity);
-      setCart((prev) =>
-        prev.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i))
-      );
+      refreshCart();
     } catch (err) {
       console.error("Error updating quantity:", err);
     }
   };
 
   const getProduct = (item) => item.product || item.book || {};
-  const cartCount = user ? cart.length : guestCart.length;
+  // const cartCount = cart.length; // Already from context
   const cartTotal = cart
     .filter((item) => selectedItems.includes(item.id))
     .reduce((sum, item) => {
       const p = getProduct(item);
       return sum + (p?.price || 0) * (item?.quantity || 0);
     }, 0);
-  const guestCartTotal = guestCart.reduce(
-    (sum, item) => sum + (getProduct(item).price || 0) * (item.quantity || 0),
-    0
-  );
 
   const handleToggleCart = () => {
     setUserOpen(false);
@@ -139,7 +93,7 @@ const Header = () => {
     setMobileNavOpen(false);
     setCartOpen((prev) => {
       const next = !prev;
-      if (next && user?.id) fetchCart(user.id);
+      if (next) refreshCart();
       return next;
     });
   };
@@ -382,53 +336,18 @@ const Header = () => {
       {/* Cart sidebar */}
       <Drawer open={cartOpen} onClose={() => setCartOpen(false)} side="right" title="Giỏ hàng">
         <div className="p-4">
-          {!user && guestCart.length === 0 ? (
+          {!user ? (
             <div className="text-center py-8 text-gray-600">
-              <p className="mb-4">Chưa có sản phẩm. Thêm từ trang sản phẩm để đặt hàng (không cần đăng nhập).</p>
+              <p className="mb-4">Vui lòng đăng nhập để xem giỏ hàng.</p>
               <Link
-                to="/shop"
+                to="/login"
                 className="inline-block px-6 py-2 rounded-xl text-white font-medium"
                 style={{ backgroundColor: brandGreen }}
                 onClick={() => setCartOpen(false)}
               >
-                Xem cửa hàng
+                Đăng nhập
               </Link>
             </div>
-          ) : !user && guestCart.length > 0 ? (
-            <>
-              <ul className="space-y-4">
-                {guestCart.map((item) => {
-                  const p = getProduct(item);
-                  const name = p?.name ?? p?.title ?? "Sản phẩm";
-                  const tempPrice = (p?.price || 0) * (item?.quantity || 0);
-                  return (
-                    <li key={p?.id || item.productId} className="flex gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <SafeImage src={getImageUrl(p?.image)} alt={name} className="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-800 truncate">{name}</p>
-                        <p className="text-sm text-gray-600 mt-1">{(p?.price || 0).toLocaleString("vi-VN")}₫ × {item.quantity}</p>
-                        <p className="text-sm font-semibold mt-1">{tempPrice.toLocaleString("vi-VN")}₫</p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <p className="flex justify-between font-bold text-gray-800 mb-4">
-                  <span>Tổng:</span>
-                  <span>{guestCartTotal.toLocaleString("vi-VN")}₫</span>
-                </p>
-                <button
-                  type="button"
-                  onClick={() => { setCartOpen(false); navigate("/checkout"); }}
-                  className="w-full py-3 rounded-xl font-semibold text-white transition"
-                  style={{ backgroundColor: brandGreen }}
-                >
-                  Thanh toán (khách)
-                </button>
-                <p className="text-xs text-gray-500 mt-2 text-center">Đặt hàng không cần đăng nhập</p>
-              </div>
-            </>
           ) : user && cart.length === 0 ? (
             <p className="text-center text-gray-500 py-10">Bạn chưa thêm sản phẩm nào.</p>
           ) : (
@@ -633,6 +552,8 @@ const Header = () => {
       </Drawer>
     </header>
   );
+
+
 };
 
 export default Header;

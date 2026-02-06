@@ -2,8 +2,19 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3212', // thay đổi nếu cần
-  withCredentials: true, // BẮT BUỘC để gửi cookie
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3212',
+  withCredentials: true,
 });
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;
