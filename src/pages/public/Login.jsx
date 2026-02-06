@@ -46,12 +46,10 @@ const Login = () => {
     if (!validate()) return;
     try {
       const res = await axios.post("/auth/login", form, {
-  withCredentials: true,
-});
+        withCredentials: true,
+      });
       const user = res.data.data.user;
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", res.data.data.access_token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.data.access_token}`;
       setUser(user);
       navigate("/", { replace: true });
     } catch (err) {
@@ -110,11 +108,10 @@ const Login = () => {
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${
-                    errors.email
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${errors.email
                       ? "border-red-400 focus:ring-red-300"
                       : "border-gray-200 focus:ring-emerald-800/40"
-                  }`}
+                    }`}
                   placeholder="your@email.com"
                   id="email"
                 />
@@ -132,11 +129,10 @@ const Login = () => {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${
-                    errors.password
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${errors.password
                       ? "border-red-400 focus:ring-red-300"
                       : "border-gray-200"
-                  }`}
+                    }`}
                   placeholder="••••••••"
                   id="password"
                 />

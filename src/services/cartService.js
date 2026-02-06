@@ -7,6 +7,7 @@ const cartService = {
   getCart: (userId) =>
     api.get(`${API_PATH}`, {
       params: { userId },
+      withCredentials: true,
     }),
 
   // Thêm vào giỏ (productId - backend dùng product)
