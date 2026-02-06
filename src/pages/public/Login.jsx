@@ -45,7 +45,9 @@ const Login = () => {
     setError("");
     if (!validate()) return;
     try {
-      const res = await axios.post("/auth/login", form);
+      const res = await axios.post("/auth/login", form, {
+  withCredentials: true,
+});
       const user = res.data.data.user;
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
