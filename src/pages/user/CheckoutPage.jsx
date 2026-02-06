@@ -4,9 +4,9 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useAuth } from "../../contexts/AuthContext";
 import cartService from "../../services/cartService";
+import orderService from "../../services/orderService";
 import toast from "../../utils/toast";
 import SafeImage from "../../components/SafeImage";
-import Cookies from "js-cookie";
 import {
   HiOutlineUser,
   HiOutlinePhone,
@@ -141,8 +141,6 @@ const CheckoutPage = () => {
     }
 
     try {
-      const token = localStorage.getItem("token") || Cookies.get("token");
-
       const payload = {
         items: checkoutItems.map((item) => {
           const p = getProduct(item);
@@ -166,25 +164,7 @@ const CheckoutPage = () => {
         },
       };
 
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3212";
-      const res = await fetch(`${apiUrl}/order/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        if (res.status === 401) {
-          toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
-          navigate("/login");
-          return;
-        }
-        throw new Error(errData.message || "Đặt hàng thất bại");
-      }
+      await orderService.createOrder(payload);
 
       localStorage.removeItem("checkout_items");
 
