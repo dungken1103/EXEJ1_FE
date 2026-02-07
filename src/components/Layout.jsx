@@ -4,7 +4,7 @@ import { HiOutlinePhone, HiOutlineChatBubbleBottomCenterText } from 'react-icons
 import Footer from './Footer';
 import Header from './Header';
 
-const HOTLINE = '0984350255';
+const HOTLINE = '0395133868';
 const ZALO_LINK = `https://zalo.me/${HOTLINE}`;
 
 const Layout = () => {

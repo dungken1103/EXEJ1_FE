@@ -6,7 +6,7 @@ import toast from "../../utils/toast";
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
 const cream = "#f8f5f0";
-const HOTLINE = "0984350255";
+const HOTLINE = "0395133868";
 const ZALO_LINK = `https://zalo.me/${HOTLINE}`;
 
 const ContactPage = () => {
@@ -83,8 +83,8 @@ const ContactPage = () => {
                 </span>
                 <div>
                   <p className="font-semibold text-gray-800">Email</p>
-                  <a href="mailto:contact@wastetoworth.vn" className="font-medium hover:underline" style={{ color: brandGreen }}>
-                    contact@wastetoworth.vn
+                  <a href="mailto:wtwwastetoworth@gmail.com" className="font-medium hover:underline" style={{ color: brandGreen }}>
+                    wtwwastetoworth@gmail.com
                   </a>
                   <p className="text-sm text-gray-500 mt-1">Phản hồi trong 24 giờ làm việc</p>
                 </div>

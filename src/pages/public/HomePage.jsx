@@ -105,19 +105,14 @@ const HomePage = () => {
     >
       {/* ═══ HERO (Migo: Decoration ideas / ĐA DẠNG TRONG LỰA CHỌN) ═══ */}
       <section className="relative min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(135deg, ${brown.dark} 0%, ${brown.DEFAULT} 45%, ${green.dark} 100%)`,
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40z' fill='%23fff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 z-0">
+          <SafeImage
+            src="/images/background.jpg"
+            alt="Hero Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50" /> {/* Cinematic Overlay */}
+        </div>
 
         <div className="relative max-w-5xl mx-auto text-center z-10">
           <p
