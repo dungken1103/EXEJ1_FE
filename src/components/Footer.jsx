@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTwitter, FaCcVisa, FaCcMastercard, FaCcPaypal } from 'react-icons/fa';
 import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
 
@@ -33,8 +34,8 @@ const Footer = () => {
             </h5>
             <ul className="space-y-2" style={{ color: creamText }}>
               <li><a href="/about" className="hover:text-white transition">Câu chuyện <span className="font-brand">Waste To Worth</span></a></li>
-              <li><a href="#" className="hover:text-white transition">Điều khoản</a></li>
-              <li><a href="#" className="hover:text-white transition">Chính sách bảo mật</a></li>
+              <li><Link to="/terms-of-use" className="hover:text-white transition">Điều khoản</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-white transition">Chính sách bảo mật</Link></li>
             </ul>
           </div>
 

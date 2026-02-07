@@ -23,12 +23,16 @@ import ManageWoodTypePage from "./pages/admin/ManageWoodTypePage";
 import ProductDetail from "./pages/public/ProductDetail";
 import ShopBookPage from "./pages/public/ShopPage";
 import CheckoutPage from "./pages/user/CheckoutPage";
+import PrivacyPolicy from "./pages/public/PrivacyPolicy";
+import TermsOfUse from "./pages/public/TermsOfUse";
 function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<RoleBasedRedirect />} />
         <Route path="/shop" element={<ShopBookPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-use" element={<TermsOfUse />} />
         <Route
           path="/userdetail"
           element={
