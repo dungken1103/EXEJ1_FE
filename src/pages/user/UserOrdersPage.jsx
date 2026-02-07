@@ -65,17 +65,29 @@ const UserOrdersPage = () => {
   const handleCancelOrder = (orderId) => {
     MySwal.fire({
       title: 'Hủy đơn hàng?',
-      text: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      text: "Vui lòng cho chúng tôi biết lý do bạn muốn hủy đơn hàng này:",
       icon: 'warning',
+      input: 'textarea',
+      inputPlaceholder: 'Nhập lý do hủy đơn...',
+      inputAttributes: {
+        'aria-label': 'Nhập lý do hủy đơn'
+      },
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Đồng ý hủy',
       cancelButtonText: 'Quay lại',
+      preConfirm: (reason) => {
+        if (!reason) {
+          MySwal.showValidationMessage('Vui lòng nhập lý do hủy đơn');
+        }
+        return reason;
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.put(`/order/${orderId}/cancel`);
+          // result.value contains the input value
+          await axios.put(`/order/${orderId}/cancel`, { reason: result.value });
           toast.success('Đã hủy đơn hàng thành công');
           fetchOrders();
         } catch (err) {

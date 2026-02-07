@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const TermsOfUse = () => {
@@ -51,14 +50,21 @@ const TermsOfUse = () => {
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold mb-3" style={{ color: brandBrown }}>6. Thay đổi điều khoản</h2>
+                    <h2 className="text-xl font-semibold mb-3" style={{ color: brandBrown }}>6. Giới hạn trách nhiệm</h2>
+                    <p>
+                        Chúng tôi không chịu trách nhiệm đối với các thiệt hại gián tiếp phát sinh từ việc sử dụng website.
+                    </p>
+                </section>
+
+                <section>
+                    <h2 className="text-xl font-semibold mb-3" style={{ color: brandBrown }}>7. Thay đổi điều khoản</h2>
                     <p>
                         Chúng tôi có quyền thay đổi, chỉnh sửa các điều khoản này bất cứ lúc nào. Việc bạn tiếp tục sử dụng website sau khi có sự thay đổi đồng nghĩa với việc bạn chấp nhận các thay đổi đó.
                     </p>
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold mb-3" style={{ color: brandBrown }}>7. Liên hệ</h2>
+                    <h2 className="text-xl font-semibold mb-3" style={{ color: brandBrown }}>8. Liên hệ</h2>
                     <p>
                         Mọi thắc mắc về Điều khoản sử dụng, xin vui lòng liên hệ: <span className="font-medium">wtwwastetoworth@gmail.com</span>.
                     </p>

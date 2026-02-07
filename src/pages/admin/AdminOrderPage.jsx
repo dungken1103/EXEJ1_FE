@@ -121,18 +121,26 @@ const AdminOrderPage = () => {
   const handleCancel = async (orderId) => {
     const result = await MySwal.fire({
       title: 'Hủy đơn hàng?',
-      text: 'Bạn có chắc muốn hủy đơn hàng này không?',
+      text: 'Vui lòng nhập lý do hủy đơn hàng này:',
       icon: 'warning',
+      input: 'textarea',
+      inputPlaceholder: 'Nhập lý do...',
       showCancelButton: true,
       confirmButtonText: 'Hủy đơn',
       cancelButtonText: 'Quay lại',
       confirmButtonColor: '#d33',
       cancelButtonColor: '#6b7280',
+      preConfirm: (reason) => {
+        if (!reason) {
+          MySwal.showValidationMessage('Vui lòng nhập lý do hủy đơn');
+        }
+        return reason;
+      }
     });
 
     if (result.isConfirmed) {
       try {
-        const res = await axios.put(`/order/${orderId}/cancel`);
+        const res = await axios.put(`/admin/order/${orderId}/cancel`, { reason: result.value });
         if (res.status === 200) {
           toast.success('Đã hủy', 'Đơn hàng đã bị hủy.');
           fetchOrders();

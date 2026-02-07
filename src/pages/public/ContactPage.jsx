@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MdLocationOn, MdEmail } from "react-icons/md";
 import { HiOutlineChatBubbleBottomCenterText, HiOutlinePhone } from "react-icons/hi2";
 import toast from "../../utils/toast";
+import axios from "axios";
 
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
@@ -24,11 +25,21 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
-    // Form hiện chưa gửi API — có thể tích hợp sau
-    await new Promise((r) => setTimeout(r, 500));
-    setSending(false);
-    setForm({ name: "", email: "", message: "" });
-    toast.success("Đã gửi tin nhắn", "Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc.");
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/contact`, {
+        name: form.name,
+        email: form.email,
+        phone: "N/A", // Contact form doesn't have phone input yet, adding standard placeholder or need to add field
+        content: form.message
+      });
+      setForm({ name: "", email: "", message: "" });
+      toast.success("Đã gửi tin nhắn", "Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc.");
+    } catch (error) {
+      toast.error("Gửi tin nhắn thất bại", "Vui lòng thử lại sau hoặc liên hệ hotline.");
+      console.error(error);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

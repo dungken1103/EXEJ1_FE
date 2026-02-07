@@ -154,7 +154,7 @@ const CheckoutPage = () => {
         userAddress: {
           fullName: form.name,
           email: form.email || user?.email,
-          phone: form.phone,
+          phone: form.phone || user?.phone,
           province:
             provinces.find((p) => p.code === Number(form.province))?.name || "",
           district:
