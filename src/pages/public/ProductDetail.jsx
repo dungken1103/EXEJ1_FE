@@ -90,7 +90,7 @@ const ProductDetail = () => {
       toast.success("Đã thêm vào giỏ hàng");
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error("Không thêm được vào giỏ. Vui lòng thử lại.");
+      toast.error("Không thêm được vào giỏ. Vui lòng thử lại. Error: " + err);
     }
   };
 
