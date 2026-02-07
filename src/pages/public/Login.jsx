@@ -45,9 +45,7 @@ const Login = () => {
     setError("");
     if (!validate()) return;
     try {
-      const res = await axios.post("/auth/login", form, {
-        withCredentials: true,
-      });
+      const res = await axios.post("/auth/login", form);
       const user = res.data.data.user;
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
@@ -109,8 +107,8 @@ const Login = () => {
                   value={form.email}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 ${errors.email
-                      ? "border-red-400 focus:ring-red-300"
-                      : "border-gray-200 focus:ring-emerald-800/40"
+                    ? "border-red-400 focus:ring-red-300"
+                    : "border-gray-200 focus:ring-emerald-800/40"
                     }`}
                   placeholder="your@email.com"
                   id="email"
@@ -130,8 +128,8 @@ const Login = () => {
                   value={form.password}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-0 pr-11 ${errors.password
-                      ? "border-red-400 focus:ring-red-300"
-                      : "border-gray-200"
+                    ? "border-red-400 focus:ring-red-300"
+                    : "border-gray-200"
                     }`}
                   placeholder="••••••••"
                   id="password"

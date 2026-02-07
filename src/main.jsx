@@ -5,6 +5,10 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
