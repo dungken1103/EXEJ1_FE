@@ -12,6 +12,7 @@ const ResetPassword = () => {
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [resetToken, setResetToken] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,9 +43,15 @@ const ResetPassword = () => {
     setMessage("");
     setLoading(true);
     try {
-      await axios.post("/auth/verify-reset-otp", { email, otp });
-      setMessage("Xác thực thành công. Nhập mật khẩu mới bên dưới.");
-      setStep("newPassword");
+      const res = await axios.post("/auth/verify-reset-otp", { email, otp });
+      if (res.data && res.data.resetToken) {
+        setResetToken(res.data.resetToken);
+        setMessage("Xác thực thành công. Nhập mật khẩu mới bên dưới.");
+        setStep("newPassword");
+      } else {
+        // Fallback checks
+        setError("Lỗi xác thực: Không nhận được token.");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Mã OTP không đúng hoặc đã hết hạn (5 phút).");
     } finally {
@@ -66,7 +73,7 @@ const ResetPassword = () => {
     }
     setLoading(true);
     try {
-      await axios.post("/auth/reset-password", { email, password });
+      await axios.post("/auth/reset-password", { resetToken, password });
       setMessage("Đặt lại mật khẩu thành công. Đang chuyển đến trang đăng nhập...");
       setTimeout(() => navigate("/login", { replace: true }), 2000);
     } catch (err) {
