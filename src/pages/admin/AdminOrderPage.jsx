@@ -275,19 +275,20 @@ const AdminOrderPage = () => {
                         </IconBtn>
 
                         {order.status === "PENDING" && (
-                          <>
-                            <IconBtn green onClick={() => handleApprove(order.id)}>
-                              <FaCheckCircle />
-                            </IconBtn>
-                            <IconBtn danger onClick={() => handleCancel(order.id)}>
-                              <FaTimesCircle />
-                            </IconBtn>
-                          </>
+                          <IconBtn green onClick={() => handleApprove(order.id)}>
+                            <FaCheckCircle />
+                          </IconBtn>
                         )}
 
                         {order.status === "CONFIRMED" && (
                           <IconBtn green onClick={() => handleAssigned(order.id)}>
                             <FaShippingFast />
+                          </IconBtn>
+                        )}
+
+                        {["PENDING", "CONFIRMED", "SHIPPING"].includes(order.status) && (
+                          <IconBtn danger onClick={() => handleCancel(order.id)}>
+                            <FaTimesCircle />
                           </IconBtn>
                         )}
                       </div>

@@ -9,6 +9,8 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes, // Import FaTimes
+  FaUser,
+  FaEnvira
 } from "react-icons/fa";
 
 const AdminLayout = () => {
@@ -72,7 +74,7 @@ const AdminLayout = () => {
     {
       id: "wood-type",
       name: "Loại gỗ",
-      icon: FaFolder,
+      icon: FaEnvira,
       path: "/admin-dashboard/wood-types",
     },
     {
@@ -86,6 +88,12 @@ const AdminLayout = () => {
       name: "Đơn hàng",
       icon: FaFileAlt,
       path: "/admin-dashboard/orders",
+    },
+    {
+      id: "profile",
+      name: "Tài khoản",
+      icon: FaUser,
+      path: "/admin-dashboard/profile",
     },
   ];
 
@@ -150,8 +158,8 @@ const AdminLayout = () => {
                     to={item.path}
                     onClick={() => isMobile && setIsSidebarOpen(false)}
                     className={`flex items-center px-3 py-3 rounded-lg transition-colors group ${isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-white"
                       }`}
                     title={!isSidebarOpen && !isMobile ? item.name : ""}
                   >

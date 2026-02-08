@@ -25,6 +25,7 @@ import ShopBookPage from "./pages/public/ShopPage";
 import CheckoutPage from "./pages/user/CheckoutPage";
 import PrivacyPolicy from "./pages/public/PrivacyPolicy";
 import TermsOfUse from "./pages/public/TermsOfUse";
+import AdminProfilePage from "./pages/admin/AdminProfilePage";
 function App() {
   return (
     <Routes>
@@ -76,6 +77,7 @@ function App() {
         {/* <Route path="/admin-dashboard/products/edit/:id" element={<ProductForm />} /> */}
         <Route path="/admin-dashboard/orders" element={<AdminOrderPage />} />
         <Route path="/admin-dashboard/wood-types" element={<ManageWoodTypePage />} />
+        <Route path="/admin-dashboard/profile" element={<AdminProfilePage />} />
       </Route>
     </Routes >
   );

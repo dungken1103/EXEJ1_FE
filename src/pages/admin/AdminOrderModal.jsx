@@ -5,7 +5,7 @@ import SafeImage from "../../components/SafeImage";
 const AdminOrderModal = ({ order, onClose }) => {
     if (!order) return null;
 
-    const { userAddress, items, total, status, payment } = order;
+    const { userAddress, items, total, status, payment, cancelReason } = order;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
@@ -100,6 +100,14 @@ const AdminOrderModal = ({ order, onClose }) => {
                             </span>
                         </div>
                     </div>
+
+                    {/* Cancel Reason */}
+                    {status === 'CANCELLED' && (
+                        <div className="bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm">
+                            <h3 className="text-sm font-bold text-red-700 mb-2">Lý do hủy đơn</h3>
+                            <p className="text-sm text-gray-700">{cancelReason || "Không có lý do cụ thể"}</p>
+                        </div>
+                    )}
 
                     {/* Order Items */}
                     <div>
