@@ -26,6 +26,10 @@ import CheckoutPage from "./pages/user/CheckoutPage";
 import PrivacyPolicy from "./pages/public/PrivacyPolicy";
 import TermsOfUse from "./pages/public/TermsOfUse";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
+import ShippingPolicy from "./pages/public/ShippingPolicy";
+import ReturnPolicy from "./pages/public/ReturnPolicy";
+import FAQPage from "./pages/public/FAQPage";
+
 function App() {
   return (
     <Routes>
@@ -55,6 +59,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/return-policy" element={<ReturnPolicy />} />
+        <Route path="/faq" element={<FAQPage />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/login-success" element={<GoogleLoginSuccess />} />

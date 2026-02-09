@@ -7,6 +7,7 @@ import {
   HiOutlineArrowRight,
   HiOutlineMap,
 } from "react-icons/hi2";
+import SEO from "../../components/SEO";
 
 const brandGreen = "#2d5a27";
 const brandBrown = "#5D4E37";
@@ -14,50 +15,47 @@ const cream = "#f8f5f0";
 const creamDark = "#ebe5dc";
 
 const AboutPage = () => {
-  useEffect(() => {
-    document.title = "Về chúng tôi | Waste To Worth";
-    return () => { document.title = "Waste To Worth"; };
-  }, []);
 
   return (
     <div
       className="min-h-screen text-[#2d2d2d] antialiased"
       style={{ backgroundColor: cream }}
     >
-      <article className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-        {/* Hero */}
-        <header className="text-center mb-12 lg:mb-16">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ color: brandBrown }}>
-            Về <span className="font-brand">Waste To Worth</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Trao một vòng đời mới cho những mảnh gỗ offcut. Thay vì bị bỏ đi, chúng được chọn lọc,
-            xử lý và chế tác thủ công để tiếp tục hiện diện dưới một hình hài mới, mang giá trị lâu dài và bền vững.
-          </p>
-        </header>
+      <SEO
+        title="Về Waste To Worth | Hành Trình Tái Sinh Gỗ Offcut & Bản Đồ Độc Bản"
+        description="Khám phá câu chuyện của Waste To Worth - nơi những mảnh gỗ offcut được tái sinh thành bản đồ gỗ 3D độc bản. Tôn vinh vẻ đẹp tự nhiên và bảo vệ môi trường."
+      />
 
-        {/* Story Section - WTW FACT */}
-        <section className="mb-14">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 lg:p-10">
-            <h2 className="text-xl sm:text-2xl font-bold mb-6" style={{ color: brandBrown }}>
-              Sự thật về những mảnh gỗ "thừa"
-            </h2>
-            <div className="space-y-4 text-gray-700 leading-relaxed">
+      <article className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+        {/* Hero - Lời Ngỏ */}
+        <header className="text-center mb-12 lg:mb-16">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style={{ color: brandBrown }}>
+            Câu chuyện <span className="font-brand">Waste To Worth</span>
+          </h1>
+          <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-left relative">
+            {/* Decoration Quote */}
+            <div className="absolute -top-4 -left-4 text-6xl text-[#2d5a27] opacity-20 font-serif">“</div>
+
+            <div className="space-y-4 text-lg text-gray-700 leading-relaxed font-light">
               <p>
-                Tại các xưởng gia công nội thất lớn, một cây gỗ quý lâu năm khi khai thác có thể nặng từ 3 đến 5 tấn.
-                Tuy nhiên, để xẻ ra những tấm ván phẳng phiu, khoảng <strong>20-30%</strong> khối lượng cây gỗ đó sẽ bị loại bỏ dưới dạng "offcut" (đầu mẩu, bìa gỗ, gỗ vụn).
-              </p>
-              <p className="bg-[#f8f5f0] p-4 rounded-lg border-l-4" style={{ borderColor: brandGreen }}>
-                <strong>Bạn có biết?</strong> 30% của một cây gỗ lớn tương đương khoảng <strong>1 TẤN</strong>.
-                Mỗi lần một bộ sofa gỗ ra đời, một lượng gỗ quý có trọng lượng ngang ngửa một chiếc ô tô Sedan 4 chỗ lại bị đẩy vào lò đốt hoặc bãi phế liệu.
+                <span className="font-bold text-[#2d5a27]">Chào bạn,</span> chúng tôi là Waste To Worth.
               </p>
               <p>
-                Tại <strong>Waste to Worth (WTW)</strong>, chúng mình không cam tâm nhìn "chiếc ô tô" đó bị lãng phí.
-                Hành trình của chúng mình bắt đầu từ việc đi nhặt nhạnh từng mảnh "offcut" quý giá đó để tái sinh thành những tấm bản đồ decor bền vững.
+                Chúng tôi đang ấp ủ một dự án kết hợp giữa tình yêu thiên nhiên và niềm đam mê du lịch.
+                Ý tưởng của chúng tôi bắt nguồn từ những mảnh gỗ <strong>offcut</strong> (gỗ thừa, gỗ bị loại) trong các xưởng gỗ quý.
+              </p>
+              <p>
+                Thay vì bị bỏ đi, chúng được chọn lọc, xử lý thủ công để trở thành những tấm <strong>Sản phẩm đồ gỗ độc bản</strong> – nơi lưu giữ ký ức và những vùng đất bạn đã đi qua.
+              </p>
+              <p>
+                Trước khi chính thức ra mắt, chúng tôi rất mong được lắng nghe ý kiến của bạn để tạo ra những sản phẩm không chỉ đẹp, mà còn thực sự có ý nghĩa.
+              </p>
+              <p className="font-bold text-right pt-2" style={{ color: brandBrown }}>
+                Trân trọng!
               </p>
             </div>
           </div>
-        </section>
+        </header>
 
         {/* Recycling vs Upcycling */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14">

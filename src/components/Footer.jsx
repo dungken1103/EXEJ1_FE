@@ -21,9 +21,9 @@ const Footer = () => {
               HỖ TRỢ KHÁCH HÀNG
             </h5>
             <ul className="space-y-2" style={{ color: creamText }}>
-              <li><a href="#" className="hover:text-white transition">Câu hỏi thường gặp</a></li>
-              <li><a href="#" className="hover:text-white transition">Vận chuyển</a></li>
-              <li><a href="#" className="hover:text-white transition">Đổi trả</a></li>
+              <li><Link to="/faq" className="hover:text-white transition">Câu hỏi thường gặp</Link></li>
+              <li><Link to="/shipping-policy" className="hover:text-white transition">Vận chuyển</Link></li>
+              <li><Link to="/return-policy" className="hover:text-white transition">Đổi trả</Link></li>
             </ul>
           </div>
 
@@ -33,7 +33,7 @@ const Footer = () => {
               VỀ CHÚNG TÔI
             </h5>
             <ul className="space-y-2" style={{ color: creamText }}>
-              <li><a href="/about" className="hover:text-white transition">Câu chuyện <span className="font-brand">Waste To Worth</span></a></li>
+              <li><Link to="/about" className="hover:text-white transition">Câu chuyện <span className="font-brand">Waste To Worth</span></Link></li>
               <li><Link to="/terms-of-use" className="hover:text-white transition">Điều khoản</Link></li>
               <li><Link to="/privacy-policy" className="hover:text-white transition">Chính sách bảo mật</Link></li>
             </ul>
