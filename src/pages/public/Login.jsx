@@ -158,7 +158,7 @@ const Login = () => {
               </button>
             </form>
 
-            <div className="flex items-center my-5">
+            {/* <div className="flex items-center my-5">
               <hr className="flex-1 border-gray-200" />
               <span className="px-3 text-gray-400 text-sm">hoặc</span>
               <hr className="flex-1 border-gray-200" />
@@ -171,7 +171,7 @@ const Login = () => {
             >
               <FcGoogle className="text-xl" />
               Đăng nhập bằng Google
-            </button>
+            </button> */}
 
             <p className="mt-6 text-sm text-center text-gray-600">
               Chưa có tài khoản?{" "}
